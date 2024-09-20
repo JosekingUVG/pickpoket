@@ -104,4 +104,16 @@ public class Producto {
     public void setCategoria(String categoria) {
         this.categoria = categoria;
     }
+
+
+
+    /**
+     * 
+     * Para devolver en tipo String informacion del producto
+     * @return Datos del objeto producto
+     */
+    public String ToString(){
+        return "Producto [codigo=" + codigo + ", nombre=" + nombre + ", precio=" + precio + ", cantidad=" + cantidad
+                + ", categoria=" + categoria + "]";
+    }
 }

@@ -52,6 +52,24 @@ public class Inventario {
     public ArrayList<Producto> VerInventario(){
         return productos;
     }
+
+    /** 
+     * Este metodo sirve para actualizar cada producto
+     * @param productoActualizado El producto de tipo Producto que se desea actualizar
+     * 
+    */
+    public void actualizarProducto(Producto productoActualizado) {
+        for (Producto producto : productos) {
+            if (producto.getCodigo().equals(productoActualizado.getCodigo())) {
+                producto.setNombre(productoActualizado.getNombre());
+                producto.setPrecio(productoActualizado.getPrecio());
+                producto.setCantidad(productoActualizado.getCantidad());
+                producto.setCategoria(productoActualizado.getCategoria());
+            }
+        }
+    }
+
+
 }
 
 
