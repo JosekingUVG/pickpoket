@@ -1,5 +1,7 @@
 import java.awt.EventQueue;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -68,9 +70,9 @@ public class InventarioGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String codigo = txtCodigo.getText();
                 String nombre = txtNombre.getText();
-                double precio = Double.parseDouble(txtPrecio.getText());
+                Float precio = Float.parseFloat(txtPrecio.getText());
 
-                Producto producto = new Producto(codigo, nombre, precio);
+                Producto producto = new Producto (codigo, nombre, precio, getDefaultCloseOperation(), nombre);
                 inventario.AgregarProducto(producto);
                 actualizarInventario();
                 limpiarCampos();

@@ -23,7 +23,7 @@ public class RegistroUsuarios {
     }
 
     // Método para registrar un nuevo usuario en el archivo CSV
-    public void registrarUsuario(String usuario, String contraseña) {
+    public void registrarUsuario(String usuario, String contrasena) {
         try (FileWriter writer = new FileWriter(ARCHIVO_CSV, true)) {
 
             // para diferenciar el usaurio y contrasenia usamos coma
