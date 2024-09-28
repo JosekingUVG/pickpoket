@@ -37,7 +37,7 @@ public class LoginGUI extends JFrame {
 	
 	//Primero debemos declarar nuestras variables
 	
-	private JFrame fVentanita;
+	
 	private JTextField tfUsuario;
 	private JButton btnAceptar;
 	private JPasswordField tfPass;
@@ -48,7 +48,7 @@ public class LoginGUI extends JFrame {
 	 */
 	public static void main(String[] args) {
 		LoginGUI ventana =  new LoginGUI(); 
-		ventana.fVentanita.setVisible(true);
+		ventana.setVisible(true);
 	}
 	
 	//luego debes de inicializarlas en el constructor
@@ -64,10 +64,10 @@ public class LoginGUI extends JFrame {
 		Escucha MP_microfono = new Escucha();
 		
 		//Primero se crea la ventana, sus dimensiones, etc. 
-		fVentanita = new JFrame();
-		fVentanita.setTitle("Login Pickpoket");
-		fVentanita.setBounds(100, 100, 523, 346);
-		fVentanita.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		 
+		setTitle("Login Pickpoket");
+		setBounds(100, 100, 523, 346);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(176, 230, 255));
@@ -79,7 +79,7 @@ public class LoginGUI extends JFrame {
 		panel.setBorder(new TitledBorder(etched, "Ingreso de datos", TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 128, 192)));
 
 		// Añade el panel al centro de la ventana
-		fVentanita.getContentPane().add(panel, BorderLayout.CENTER);
+		getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(new GridLayout(0, 1, 0, 0));
 		
 		//Aquí se crean los labels, textfields y botones. 
@@ -147,26 +147,26 @@ public class LoginGUI extends JFrame {
 					// Si el login fue exitoso, redirigir dependiendo del tipo de usuario
 					if (usuarioLogueado.getTipo() == 1) {
 						// Si es Admin, abrir la interfaz AdminGUI
-						JOptionPane.showMessageDialog(fVentanita, "Login exitoso como Admin", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+						JOptionPane.showMessageDialog(null, "Login exitoso como Admin", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 						AdminGUI adminGUI = new AdminGUI();
 						adminGUI.setVisible(true);
-						fVentanita.dispose(); // Cerrar la ventana actual
+						dispose(); // Cerrar la ventana actual
 	
 					} else if (usuarioLogueado.getTipo() == 2) {
 						// Si es Vendedor, abrir la interfaz VendedorGUI
-						JOptionPane.showMessageDialog(fVentanita, "Login exitoso como Vendedor", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+						JOptionPane.showMessageDialog(null, "Login exitoso como Vendedor", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 						VendedorGUI vendedorGUI = new VendedorGUI();
 						vendedorGUI.setVisible(true);
-						fVentanita.dispose(); // Cerrar la ventana actual
+						dispose(); // Cerrar la ventana actual
 					}
 				} else {
 					// Si el login falla, mostrar mensaje de error
-					JOptionPane.showMessageDialog(fVentanita, "Usuario o contraseña incorrectos", "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos", "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			} catch (IOException ex) {
 				// Capturamos cualquier error de lectura del archivo CSV
 				ex.printStackTrace();
-				JOptionPane.showMessageDialog(fVentanita, "Error al leer el archivo de usuarios", "Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Error al leer el archivo de usuarios", "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}
