@@ -36,7 +36,7 @@ public class Inventario {
      * @param codigo El código del producto que se desea buscar.
      * @return El producto encontrado o null si no existe.
      */
-    public Producto BuscarProducto(String codigo){
+    public Producto buscarProducto(String codigo){
         for(Producto producto : productos){
             if(producto.getCodigo().equals(codigo)){
                 return producto;

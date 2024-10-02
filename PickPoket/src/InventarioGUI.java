@@ -97,7 +97,7 @@ public class InventarioGUI extends JFrame {
         btnBuscar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String codigo = txtCodigo.getText();
-                Producto producto = inventario.BuscarProducto(codigo);
+                Producto producto = inventario.buscarProducto(codigo);
                 if (producto != null) {
                     txtNombre.setText(producto.getNombre());
                     txtPrecio.setText(String.valueOf(producto.getPrecio()));
