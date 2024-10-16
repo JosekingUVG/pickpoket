@@ -100,31 +100,31 @@ public class VendedorGUI extends JFrame {
         panel.add(panel_2, BorderLayout.CENTER);
         panel_2.setLayout(new GridLayout(12, 1, 0, 0));
 
-        btnRegistrarUsuario = new JButton("REGISTRAR USUARIO");
+        btnRegistrarUsuario = new JButton("USUARIOS");
         panel_2.add(btnRegistrarUsuario);
 
         label_2 = new JLabel("");
         panel_2.add(label_2);
 
-        btnEditarUsuario = new JButton("EDITAR USUARIO");
+        btnEditarUsuario = new JButton("PRODUCTOS");
         panel_2.add(btnEditarUsuario);
 
         label_5 = new JLabel("");
         panel_2.add(label_5);
 
-        btnRegistrarProducto = new JButton("REGISTRAR PRODUCTO");
+        btnRegistrarProducto = new JButton("INVENTARIO");
         panel_2.add(btnRegistrarProducto);
 
         label_8 = new JLabel("");
         panel_2.add(label_8);
 
-        btnEditarProducto = new JButton("EDITAR PRODUCTO");
+        btnEditarProducto = new JButton("INFORMES");
         panel_2.add(btnEditarProducto);
 
         label_11 = new JLabel("");
         panel_2.add(label_11);
 
-        btnInventario = new JButton("INVENTARIO");
+        btnInventario = new JButton("DESCUENTOS");
         panel_2.add(btnInventario);
 
         label_14 = new JLabel("");
@@ -150,15 +150,15 @@ public class VendedorGUI extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == btnRegistrarUsuario) {
-                JOptionPane.showMessageDialog(null, "Has presionado el botón: Registrar Usuario");
+                JOptionPane.showMessageDialog(null, "Has presionado el botón: Usuarios");
             } else if (e.getSource() == btnEditarUsuario) {
-                JOptionPane.showMessageDialog(null, "Has presionado el botón: Editar Usuario");
+                JOptionPane.showMessageDialog(null, "Has presionado el botón: Productos");
             } else if (e.getSource() == btnRegistrarProducto) {
-                JOptionPane.showMessageDialog(null, "Has presionado el botón: Registrar Producto");
-            } else if (e.getSource() == btnEditarProducto) {
-                JOptionPane.showMessageDialog(null, "Has presionado el botón: Editar Producto");
-            } else if (e.getSource() == btnInventario) {
                 JOptionPane.showMessageDialog(null, "Has presionado el botón: Inventario");
+            } else if (e.getSource() == btnEditarProducto) {
+                JOptionPane.showMessageDialog(null, "Has presionado el botón: Informe");
+            } else if (e.getSource() == btnInventario) {
+                JOptionPane.showMessageDialog(null, "Has presionado el botón: Descuentos");
             } else if (e.getSource() == btnVolver) {
                 JOptionPane.showMessageDialog(null, "Has presionado el botón: Volver");
 
