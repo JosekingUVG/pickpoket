@@ -18,3 +18,14 @@
 /VendedorGUI.class
 /VendedorGUI$Escucha.class
 /AdminGUI$Escucha.class
+/CargarCSV.class
+/GuardarCSV.class
+/RegistroUsuarios.class
+/SistemaVentas.class
+/ProductosGUI$1.class
+/ProductosGUI.class
+/ProductosGUI$Escucha.class
+/ProductosGUI$2.class
+/EditaProductoGUI$1.class
+/EditaProductoGUI.class
+/EditaProductoGUI$2.class
