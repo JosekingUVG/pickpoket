@@ -84,9 +84,20 @@ public class SistemaVentas {
      */
     public void generarReporteDiario() {
         double totalDiario = 0;
+        System.out.println("Reporte Diario de ventas: ");
         for (Venta venta : ventas) {
+            System.out.println("Código de Venta: " + venta.getCodigoVenta() + " | Fecha: " + venta.getFecha());
+            for(Producto producto : venta.getListaProductos()){
+                double precioTotalProducto = producto.getPrecio() * producto.getCantidad();
+                System.out.println("Producto: " + producto.getNombre() +
+                " | Cantidad: " + producto.getCantidad() +
+                " | Precio Unitario: " + producto.getPrecio() +
+                " | Precio Total: " + precioTotalProducto);
+            }
             totalDiario += venta.CalcularTotal();
+            System.out.println("-----------------------------------");
         }
         System.out.println("Total de ventas diarias: " + totalDiario);
     }
+
 }

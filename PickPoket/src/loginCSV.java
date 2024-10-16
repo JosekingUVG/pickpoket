@@ -5,7 +5,8 @@ import java.util.List;
 public class loginCSV {
     private Usuario usuario;
     
-    private static final String FILE_PATH = "PickPoket\\src\\usuarios.csv";
+    private static final String FILE_PATH = "data/usuarios.csv";
+
 
 
     // Constructor
