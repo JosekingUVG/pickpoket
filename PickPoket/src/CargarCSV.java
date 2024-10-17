@@ -26,7 +26,7 @@ public class CargarCSV {
      * @return El inventario cargado con los productos desde el archivo CSV.
      */
     public Inventario cargarProductos() {
-        String rutaArchivo = "productos.csv";
+        String rutaArchivo = "data/productos.csv";
         Inventario inventario = new Inventario();
 
         if (verificarArchivoExiste(rutaArchivo)) {

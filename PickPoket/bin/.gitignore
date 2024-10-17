@@ -23,9 +23,17 @@
 <<<<<<< HEAD
 /RegistroUsuarios.class
 /SistemaVentas.class
+/ProductosGUI$1.class
+/ProductosGUI.class
+/ProductosGUI$Escucha.class
+/ProductosGUI$2.class
+/EditaProductoGUI$1.class
+/EditaProductoGUI.class
+/EditaProductoGUI$2.class
 =======
 /SistemaVentas.class
 /UsuariosGUI$1.class
 /UsuariosGUI.class
 /UsuariosGUI$Escucha.class
 >>>>>>> 2d0708e36533867c411b14a659e5203315af765e
+/UsuariosGUI$2.class

@@ -3,6 +3,10 @@ import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -16,6 +20,7 @@ import javax.swing.border.TitledBorder;
 
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.border.MatteBorder;
 import javax.swing.JComboBox;
 import javax.swing.border.LineBorder;
@@ -52,6 +57,8 @@ public class UsuariosGUI extends JFrame {
 	private JPanel contentPane;
 	private JTextField textField;
 	private JTextField textField_1;
+	private JButton btnEliminar;
+	private JButton btnVolver;
 
 	/**
 	 * Launch the application.
@@ -74,6 +81,8 @@ public class UsuariosGUI extends JFrame {
 	 */
 	public UsuariosGUI() {
 		inicializador();
+		
+		
 	}
 	 public void inicializador() {
 		//Se debe crear un objeto que escuche los botnes, se crea en la parte de abajo
@@ -96,7 +105,7 @@ public class UsuariosGUI extends JFrame {
 			panel_1.setLayout(new GridLayout(0, 2, 0, 0));
 			panel_1.setBackground(new Color(176, 230, 255));
 			
-			cargarUsuario = new JComboBox(tipo);
+			cargarUsuario = new JComboBox();
 			panel_1.add(cargarUsuario);
 			
 			btnAceptar2 = new JButton("Aceptar");
@@ -127,9 +136,11 @@ public class UsuariosGUI extends JFrame {
 			btnAceptar1= new JButton("Aceptar");
 			panel.add(btnAceptar1);
 			
+			btnVolver = new JButton("Volver");
+			panel.add(btnVolver);
+			
 			
 			JLabel lblNewLabel_11 = new JLabel("Nombre");
-			lblNewLabel_11.setEnabled(false);
 			panel_1.add(lblNewLabel_11);
 			
 			tfNombre2 = new JTextField();
@@ -138,7 +149,6 @@ public class UsuariosGUI extends JFrame {
 			tfNombre2.setColumns(10);
 			
 			JLabel lblNewLabel2 = new JLabel("Contraseña");
-			lblNewLabel2.setEnabled(false);
 			panel_1.add(lblNewLabel2);
 			
 			tfPassword2 = new JTextField();
@@ -147,7 +157,6 @@ public class UsuariosGUI extends JFrame {
 			tfPassword2.setColumns(10);
 			
 			JLabel lblNewLabel_22 = new JLabel("Tipo");
-			lblNewLabel_22.setEnabled(false);
 			panel_1.add(lblNewLabel_22);
 			
 			cbTipo2 = new JComboBox(tipo);
@@ -158,14 +167,52 @@ public class UsuariosGUI extends JFrame {
 			btnAceptar3.setEnabled(false);
 			panel_1.add(btnAceptar3);
 			
+			btnEliminar = new JButton("Eliminar");
+			btnEliminar.setEnabled(false);
+			panel_1.add(btnEliminar);
+			
+			//CARGAR LOS USUARIOS EN EL COMBOBOX
+			 try {
+		            // Llenar el JComboBox con los usuarios del archivo
+		            cargarUsuariosEnComboBox();
+		        } catch (IOException e) {
+		            e.printStackTrace();
+		            System.out.println("Error al cargar usuarios: " + e.getMessage());
+		        }
+			 
+			 
+			 //Añadir acciones a los botones:
+			 btnVolver.addActionListener(MP_microfono);
+			
 	 }
 	 
 	 private class Escucha implements ActionListener {
 		    
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (e.getSource() == btnVolver) {
+	                JOptionPane.showMessageDialog(null, "Has presionado el botón: Volver");
+	                AdminGUI adminFrame = new AdminGUI();
+	       	     	adminFrame.setVisible(true);
+
+	       	     	// Cerrar el frame actual
+	       	     	dispose();
+	            }
+				
 				
 			}
 	 }
+	 
+	 private void cargarUsuariosEnComboBox() throws IOException {
+	        loginCSV usuarioLoader = new loginCSV();
+	        List<Usuario> usuarios = usuarioLoader.obtenerUsuarios();
+
+	        // Agregar nombres al JComboBox
+	        for (Usuario usuario : usuarios) {
+	            cargarUsuario.addItem(usuario.getNombre());
+	        }
+	    }
+	 
+	
 
 }

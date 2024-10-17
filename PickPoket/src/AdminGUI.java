@@ -43,7 +43,7 @@ public class AdminGUI extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    VendedorGUI frame = new VendedorGUI();
+                    AdminGUI frame = new AdminGUI();
                     frame.setVisible(true);  // Ahora usas el JFrame de la clase VendedorGUI
                 } catch (Exception e) {
                     e.printStackTrace();
