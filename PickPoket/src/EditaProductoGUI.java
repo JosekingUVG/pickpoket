@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import java.awt.Color;
 import javax.swing.border.LineBorder;
@@ -18,6 +19,7 @@ public class EditaProductoGUI {
     private JTextField textField_2;
     private JTextField textField_3;
     private JTextField textField_4;
+    private JButton BEvolver;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -39,6 +41,7 @@ public class EditaProductoGUI {
 
     // Método para inicializar el contenido del frame
     private void initialize() {
+    	Escucha escucha= new Escucha();
         // Crear frame
         frame = new JFrame();
         frame.getContentPane().setBackground(new Color(208, 255, 255));
@@ -113,12 +116,30 @@ public class EditaProductoGUI {
         textField_4.setBounds(167, 170, 130, 26);
         panel.add(textField_4);
         textField_4.setColumns(10);
+        
+        BEvolver = new JButton("Volver");
+        
+        BEvolver.setBounds(263, 213, 150, 30);
+        panel.add(BEvolver);
+        
+        BEvolver.addActionListener(escucha);
 
-        // Asignar acción al botón
-        BEditar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Botón Editar presionado.");
+        
+    }
+    private class Escucha implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+        	// Aquí se pueden definir las acciones de los botones
+        	if (e.getSource() == BEvolver) {
+                JOptionPane.showMessageDialog(null, "Has presionado el botón: Volver");
+                ProductosGUI fr = new ProductosGUI();
+                fr.setVisible(true);
+                frame.dispose();
             }
-        });
+        	
+        }
+    }
+    public void setVisible(boolean visible) {
+        frame.setVisible(visible);
     }
 }

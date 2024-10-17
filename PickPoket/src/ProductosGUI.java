@@ -13,7 +13,7 @@ public class ProductosGUI extends JFrame {
 
     // Componentes del GUI
     private JButton BAgregar;
-    private JButton BEliminar;
+    private JButton bregresar;
     private JTextField textField;
     private JTextField textField_1;
     private JTextField textField_2;
@@ -21,6 +21,7 @@ public class ProductosGUI extends JFrame {
     private JTextField textField_4;
     private JButton btnEditarProducto;
     private JComboBox<String> comboBox;
+    private JButton bEliminar;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -42,6 +43,7 @@ public class ProductosGUI extends JFrame {
     }
 
     private void inicializar() {
+    	Escucha escucha = new Escucha();
         getContentPane().setLayout(new BorderLayout());
 
         // Panel para agregar productos
@@ -91,21 +93,29 @@ public class ProductosGUI extends JFrame {
 
         comboBox = new JComboBox<>();
         PanelEliminar.add(comboBox);
+        
+        bEliminar = new JButton("Eliminar");
+        bEliminar.setHorizontalAlignment(SwingConstants.LEFT);
+        PanelEliminar.add(bEliminar);
 
-        BEliminar = new JButton("Eliminar");
-        BEliminar.setHorizontalAlignment(SwingConstants.LEFT);
-        PanelEliminar.add(BEliminar);
+        bregresar = new JButton("Regresar");
+        bregresar.setHorizontalAlignment(SwingConstants.LEFT);
+        PanelEliminar.add(bregresar);
         
        
         //CARGAR LOS PRODUCTOS EN EL COMBOBOX
-      
+      /*
 		 try {
 	            // Llenar el JComboBox con los productos del archivo
 	            cargarUsuariosEnComboBox();
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	            System.out.println("Error al cargar productos: " + e.getMessage());
-	        }
+	        }*/
+        
+        //Escuchar los botones:
+        bregresar.addActionListener(escucha);
+        btnEditarProducto.addActionListener(escucha);
         
     }
 
@@ -113,10 +123,21 @@ public class ProductosGUI extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             // Aquí se pueden definir las acciones de los botones
+        	if (e.getSource() == bregresar) {
+                JOptionPane.showMessageDialog(null, "Has presionado el botón: Volver");
+                AdminGUI fr = new AdminGUI();
+                fr.setVisible(true);
+                dispose();
+            } else if (e.getSource() == btnEditarProducto) {
+            	JOptionPane.showMessageDialog(null, "Has presionado el botón: Editar Producto");
+                EditaProductoGUI frs = new EditaProductoGUI();
+                frs.setVisible(true);
+                dispose();
+            }
         }
     }
     
-    private void cargarUsuariosEnComboBox() throws IOException {
+    /*private void cargarUsuariosEnComboBox() throws IOException {
         CargarCSV usuarioLoader = new CargarCSV();
         List<Producto> productos =  usuarioLoader.cargarProductos(); // Usar el nombre correcto
 
@@ -124,7 +145,7 @@ public class ProductosGUI extends JFrame {
         for (Producto producto : productos) {
             comboBox.addItem(producto.getNombre());
         }
-    }
+    }*/
 
 }
 

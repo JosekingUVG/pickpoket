@@ -151,8 +151,14 @@ public class AdminGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == btnRegistrarUsuario) {
                 JOptionPane.showMessageDialog(null, "Has presionado el botón: Usuarios");
+                UsuariosGUI fr = new UsuariosGUI();
+                fr.setVisible(true);
+                dispose();
             } else if (e.getSource() == btnEditarUsuario) {
                 JOptionPane.showMessageDialog(null, "Has presionado el botón: Productos");
+                ProductosGUI fr = new ProductosGUI();
+                fr.setVisible(true);
+                dispose();
             } else if (e.getSource() == btnRegistrarProducto) {
                 JOptionPane.showMessageDialog(null, "Has presionado el botón: Inventario");
             } else if (e.getSource() == btnEditarProducto) {
