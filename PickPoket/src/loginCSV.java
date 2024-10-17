@@ -56,32 +56,29 @@ public List<Usuario> obtenerUsuarios() throws IOException {
         return null; // Usuario no encontrado o contraseña incorrecta
     }
 
+    //Función para Eliminar un usuario del csv usando el ArrayList obtenerUsuario
+    public void eliminarUsuario(Usuario user) throws IOException{
+    	 List<Usuario> usuarios = obtenerUsuarios(); // Cargar todos los usuarios en un ArrayList
+
+    	// Usar un ciclo for con un índice para eliminar el usuario
+         for (int i = 0; i < usuarios.size(); i++) {
+             if (usuarios.get(i).getNombre().equals(user.getNombre())) {
+                 usuarios.remove(i); // Eliminar el usuario
+                 break; // Terminar el ciclo ya que el usuario ha sido encontrado
+             }
+         }
+
+         // Sobrescribir el archivo CSV con la lista actualizada
+         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_PATH))) {
+             for (Usuario usuario : usuarios) {
+                 bw.write(usuario.getNombre() + "," + usuario.getContraseña() + "," + usuario.getTipo());
+                 bw.newLine();
+             }
+         }
+     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
 
 
 

@@ -59,6 +59,9 @@ public class UsuariosGUI extends JFrame {
 	private JTextField textField_1;
 	private JButton btnEliminar;
 	private JButton btnVolver;
+	loginCSV usuarioLoader = new loginCSV();
+	private JLabel lblNewLabel_3;
+	private JLabel lblNewLabel_4;
 
 	/**
 	 * Launch the application.
@@ -133,11 +136,12 @@ public class UsuariosGUI extends JFrame {
 			cbTipo1 = new JComboBox(tipo);
 			panel.add(cbTipo1);
 			
+			lblNewLabel_4 = new JLabel("");
+			panel.add(lblNewLabel_4);
+			
 			btnAceptar1= new JButton("Aceptar");
 			panel.add(btnAceptar1);
-			
-			btnVolver = new JButton("Volver");
-			panel.add(btnVolver);
+			btnAceptar1.addActionListener(MP_microfono);
 			
 			
 			JLabel lblNewLabel_11 = new JLabel("Nombre");
@@ -171,6 +175,16 @@ public class UsuariosGUI extends JFrame {
 			btnEliminar.setEnabled(false);
 			panel_1.add(btnEliminar);
 			
+			lblNewLabel_3 = new JLabel("");
+			panel_1.add(lblNewLabel_3);
+			
+			btnVolver = new JButton("Volver");
+			panel_1.add(btnVolver);
+			
+			
+			//Añadir acciones a los botones:
+			btnVolver.addActionListener(MP_microfono);
+			
 			//CARGAR LOS USUARIOS EN EL COMBOBOX
 			 try {
 		            // Llenar el JComboBox con los usuarios del archivo
@@ -179,10 +193,10 @@ public class UsuariosGUI extends JFrame {
 		            e.printStackTrace();
 		            System.out.println("Error al cargar usuarios: " + e.getMessage());
 		        }
-			 
-			 
-			 //Añadir acciones a los botones:
-			 btnVolver.addActionListener(MP_microfono);
+			 btnAceptar2.addActionListener(MP_microfono);
+			 btnAceptar3.addActionListener(MP_microfono);
+			 btnEliminar.addActionListener(MP_microfono);
+
 			
 	 }
 	 
@@ -190,6 +204,7 @@ public class UsuariosGUI extends JFrame {
 		    
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				//Volver a la interfaz admin
 				if (e.getSource() == btnVolver) {
 	                JOptionPane.showMessageDialog(null, "Has presionado el botón: Volver");
 	                AdminGUI adminFrame = new AdminGUI();
@@ -197,14 +212,100 @@ public class UsuariosGUI extends JFrame {
 
 	       	     	// Cerrar el frame actual
 	       	     	dispose();
-	            }
+	            } else if (e.getSource() == btnAceptar1){
+					//Guardar los datos del usuario
+					Usuario user = new Usuario();
+
+					user.setNombre(tfNombre1.getText());
+					user.setContraseña(tfPassword1.getText());
+					int tipoUser;
+					//Comparar si el item es Admin o Vendedor para cbTipo1
+					if (cbTipo1.getSelectedItem().equals("Admin")) {
+                        tipoUser = 1;
+                    } else {
+                        tipoUser = 2;
+                    }
+					user.setTipo(tipoUser);
+					try {
+						usuarioLoader.guardarUsuario(user);
+						JOptionPane.showMessageDialog(null, "Usuario guardado correctamente");
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+						JOptionPane.showMessageDialog(null, "Error al guardar el usuario: " + e1.getMessage());
+					}
+					
+
+				} else if (e.getSource() == btnAceptar2) {
+					//Habilitar la edición y bloquear el btnAceptar1 y el cbCargarUsuario
+					btnAceptar1.setEnabled(false);
+					cargarUsuario.setEnabled(false);
+					cbTipo2.setEnabled(true);
+					btnAceptar3.setEnabled(true);
+					btnEliminar.setEnabled(true);
+					tfNombre2.setEnabled(true);
+					tfPassword2.setEnabled(true);
+					
+				} else if (e.getSource() == btnAceptar3){
+					//Editar el usuario que se haya elegido:
+					Usuario user = new Usuario();
+					user.setNombre(tfNombre2.getText());
+					user.setContraseña(tfPassword2.getText());
+					int tipoUser;
+					//Comparar si el item es Admin o Vendedor para cbTipo2
+					if (cbTipo2.getSelectedItem().equals("Admin")) {
+                        tipoUser = 1;
+                    } else {
+                        tipoUser = 2;
+                    }
+                    user.setTipo(tipoUser);
+                    try {
+                        usuarioLoader.modificarUsuario(tfNombre2.getText(), tfPassword2.getText(), tipoUser);
+                        JOptionPane.showMessageDialog(null, "Usuario modificado correctamente");
+                    } catch (IOException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                        JOptionPane.showMessageDialog(null, "Error al modificar el usuario: " + e1.getMessage());
+                    }
+                  //Habilitar la edición y bloquear el btnAceptar1 y el cbCargarUsuario
+					btnAceptar1.setEnabled(true);
+					cargarUsuario.setEnabled(true);
+					cbTipo2.setEnabled(false);
+					btnAceptar3.setEnabled(false);
+					btnEliminar.setEnabled(false);
+					tfNombre2.setEnabled(false);
+					tfPassword2.setEnabled(false);
+				} else if (e.getSource() == btnEliminar){
+					Usuario user = new Usuario();
+					String eliminado = (String) cargarUsuario.getSelectedItem();
+					user.setNombre(eliminado); 
+					try {
+						usuarioLoader.eliminarUsuario(user);
+						JOptionPane.showMessageDialog(null, "Usuario eliminado correctamente");
+						
+						
+					}catch (IOException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                        JOptionPane.showMessageDialog(null, "Error al modificar el usuario: " + e1.getMessage());
+                    }
+					//Habilitar la edición y bloquear el btnAceptar1 y el cbCargarUsuario
+					btnAceptar1.setEnabled(true);
+					cargarUsuario.setEnabled(true);
+					cbTipo2.setEnabled(false);
+					btnAceptar3.setEnabled(false);
+					btnEliminar.setEnabled(false);
+					tfNombre2.setEnabled(false);
+					tfPassword2.setEnabled(false);
+
+				}
 				
 				
 			}
 	 }
 	 
 	 private void cargarUsuariosEnComboBox() throws IOException {
-	        loginCSV usuarioLoader = new loginCSV();
+	        
 	        List<Usuario> usuarios = usuarioLoader.obtenerUsuarios();
 
 	        // Agregar nombres al JComboBox
