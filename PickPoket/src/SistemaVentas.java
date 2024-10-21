@@ -7,8 +7,7 @@ import java.util.ArrayList;
 public class SistemaVentas {
     private Inventario inventario;
     private ArrayList<Venta> ventas;
-    private GuardarCSV guardarCSV;
-    private CargarCSV cargarCSV;
+    private ManejoCSV manejoCSV;
 
     /**
      * Constructor que inicializa el inventario y crea una lista vacía de ventas.
@@ -16,12 +15,11 @@ public class SistemaVentas {
      * @param inventario el inventario de productos de la tienda
      */
     public SistemaVentas(Inventario inventario) {
-        guardarCSV = new GuardarCSV();
-        cargarCSV = new CargarCSV();
+        manejoCSV = new ManejoCSV();
 
          // Cargar el inventario y las ventas desde archivos CSV
-         this.inventario = cargarCSV.cargarProductos();
-         this.ventas = cargarCSV.cargarVentas(inventario);
+         this.inventario = manejoCSV.cargarProductos();
+         this.ventas = manejoCSV.cargarVentas(inventario);
         
     }
 
@@ -75,8 +73,8 @@ public class SistemaVentas {
                 productoInventario.setCantidad(nuevaCantidad);
             }
         }
-        guardarCSV.guardarProductos(inventario);
-        guardarCSV.guardarVentas(ventas);
+        manejoCSV.guardarProductos(inventario);
+        manejoCSV.guardarVentas(ventas);
     }
 
     /**
