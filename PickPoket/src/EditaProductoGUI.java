@@ -25,8 +25,8 @@ public class EditaProductoGUI {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    EditaProductoGUI window = new EditaProductoGUI();
-                    window.frame.setVisible(true);
+                    EditaProductoGUI ventana = new EditaProductoGUI();
+                    ventana.frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
