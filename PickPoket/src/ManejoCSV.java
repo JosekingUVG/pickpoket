@@ -6,6 +6,7 @@ import java.util.List;
  * Clase que permite manejar la lectura y escritura de archivos CSV.
  */
 public class ManejoCSV {
+    private static final String RUTA_ARCHIVO = "data/productos.csv";
 
     /**
      * Verifica si el archivo existe en la ruta especificada.
@@ -222,5 +223,45 @@ public class ManejoCSV {
             }
         }
         return productos;
+    }
+
+     /**
+     * Modifica un producto existente en el archivo CSV.
+     *
+     * @param nombreProducto El nombre del producto a modificar.
+     * @param nuevoCodigo El nuevo código del producto.
+     * @param nuevoPrecio El nuevo precio del producto.
+     * @param nuevaCantidad La nueva cantidad del producto.
+     * @param nuevaCategoria La nueva categoría del producto.
+     * @throws IOException Si ocurre un error de entrada/salida.
+     */
+    public void modificarProducto(String nombreProducto, String nuevoCodigo, float nuevoPrecio, int nuevaCantidad, String nuevaCategoria) throws IOException {
+        File archivoOriginal = new File(RUTA_ARCHIVO);
+        File archivoTemporal = new File("temp.csv");
+
+        BufferedReader reader = new BufferedReader(new FileReader(archivoOriginal));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(archivoTemporal));
+
+        String linea;
+        while ((linea = reader.readLine()) != null) {
+            String[] datos = linea.split(",");
+            
+            // Verificamos si el nombre coincide para modificar el producto
+            if (datos[1].equals(nombreProducto)) {
+                // Escribimos la nueva información del producto
+                writer.write(nuevoCodigo + "," + nombreProducto + "," + nuevoPrecio + "," + nuevaCantidad + "," + nuevaCategoria + "\n");
+            } else {
+                // Escribimos la línea sin cambios
+                writer.write(linea + "\n");
+            }
+        }
+        writer.close();
+        reader.close();
+
+        // Reemplazar el archivo original con el archivo temporal
+        archivoOriginal.delete();
+        archivoTemporal.renameTo(archivoOriginal);
+
+        System.out.println("Producto modificado exitosamente en el archivo CSV.");
     }
 }

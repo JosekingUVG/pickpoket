@@ -1,6 +1,8 @@
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -20,6 +22,9 @@ public class EditaProductoGUI {
     private JTextField textField_3;
     private JTextField textField_4;
     private JButton BEvolver;
+    private JButton BEditar;
+    private JComboBox comboBox;
+
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -59,11 +64,11 @@ public class EditaProductoGUI {
         panel.setLayout(null);  
 
         // Botón Editar
-        JButton BEditar = new JButton("Editar Producto");
+        BEditar = new JButton("Editar Producto");
         BEditar.setBounds(6, 213, 150, 30);  
         panel.add(BEditar);
         
-        JComboBox comboBox = new JComboBox();
+        comboBox = new JComboBox();
         comboBox.setBounds(19, 6, 207, 30);
         panel.add(comboBox);
         
@@ -123,6 +128,18 @@ public class EditaProductoGUI {
         panel.add(BEvolver);
         
         BEvolver.addActionListener(escucha);
+        BEditar.addActionListener(escucha);
+        
+        
+        //CARGAR LOS PRODUCTOS EN EL COMBOBOX
+      
+		 try {
+            // Llenar el JComboBox con los productos del archivo
+            cargarUsuariosEnComboBox();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error al cargar productos: " + e.getMessage());
+        }
 
         
     }
@@ -135,6 +152,53 @@ public class EditaProductoGUI {
                 ProductosGUI fr = new ProductosGUI();
                 fr.setVisible(true);
                 frame.dispose();
+            } else if(e.getSource()==BEditar){
+                // Captura del producto seleccionado
+    String nombreProductoAEditar = comboBox.getSelectedItem().toString();
+
+    // Validación de selección en el JComboBox
+    if (nombreProductoAEditar == null || nombreProductoAEditar.isEmpty()) {
+        JOptionPane.showMessageDialog(null, "Seleccione un producto para editar.");
+        return;
+    }
+
+    // Captura de los nuevos datos ingresados por el usuario
+    String nuevoCodigo = textField.getText();
+    String nuevoNombre = textField_1.getText();
+    float nuevoPrecio;
+    int nuevaCantidad;
+    String nuevaCategoria = textField_4.getText();
+
+    // Validar que los campos de precio y cantidad sean valores numéricos
+    try {
+        nuevoPrecio = Float.parseFloat(textField_2.getText());
+        nuevaCantidad = Integer.parseInt(textField_3.getText());
+    } catch (NumberFormatException ex) {
+        JOptionPane.showMessageDialog(null, "Ingrese un valor numérico válido para el precio y la cantidad.");
+        return;
+    }
+
+    // Llamar al método de ManejoCSV para modificar el producto en el archivo
+    try {
+        ManejoCSV manejoCSV = new ManejoCSV();
+        manejoCSV.modificarProducto(nombreProductoAEditar, nuevoCodigo, nuevoPrecio, nuevaCantidad, nuevaCategoria);
+
+        // Actualizar el ComboBox para reflejar los cambios
+        comboBox.removeItem(nombreProductoAEditar);
+        comboBox.addItem(nuevoNombre); // Agrega el nombre modificado al ComboBox
+
+        // Mensaje de confirmación
+        JOptionPane.showMessageDialog(null, "Producto modificado exitosamente: " + nuevoNombre);
+
+        // Limpiar los campos de texto después de la edición
+        textField.setText("");
+        textField_1.setText("");
+        textField_2.setText("");
+        textField_3.setText("");
+        textField_4.setText("");
+    } catch (IOException ex) {
+        JOptionPane.showMessageDialog(null, "Error al modificar el producto: " + ex.getMessage());
+    }
             }
         	
         }
@@ -142,4 +206,22 @@ public class EditaProductoGUI {
     public void setVisible(boolean visible) {
         frame.setVisible(visible);
     }
+
+
+
+     private void cargarUsuariosEnComboBox() throws IOException {
+        
+
+      
+        
+        // Cargar los productos desde el archivo CSV al inventario
+        ManejoCSV cargar = new ManejoCSV();
+        Inventario inventario = cargar.cargarProductos();
+
+        // Agregar nombres al JComboBox desde el inventario
+        for (Producto produ : inventario.VerInventario()) {
+            comboBox.addItem(produ.getNombre());
+        }      
+
+    }     
 }
