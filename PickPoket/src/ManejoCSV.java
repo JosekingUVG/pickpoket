@@ -2,6 +2,14 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+
 /**
  * Clase que permite manejar la lectura y escritura de archivos CSV.
  */
@@ -264,4 +272,60 @@ public class ManejoCSV {
 
         System.out.println("Producto modificado exitosamente en el archivo CSV.");
     }
+    
+    
+    
+
+    public void aplicarDescuentoTemporal(String nombreProducto, double precioDescuento, LocalDate fechaFin) {
+        try (FileWriter writer = new FileWriter("data/descuentos_temporales.csv", true)) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            writer.write(nombreProducto + "," + precioDescuento + "," + fechaFin.format(formatter) + "\n");
+            JOptionPane.showMessageDialog(null, "Descuento aplicado temporalmente.");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error al aplicar el descuento: " + e.getMessage());
+        }
+    }
+    
+    public void verificarDescuentosExpirados() {
+    	String linea;
+        List<String> lineasActualizadas = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate hoy = LocalDate.now();
+        
+        try (BufferedReader reader = new BufferedReader(new FileReader("data/descuentos_temporales.csv"))) {
+            while ((linea = reader.readLine()) != null) {
+                String[] datos = linea.split(",");
+                String nombreProducto = datos[0];
+                double precioDescuento = Double.parseDouble(datos[1]);
+                LocalDate fechaFin = LocalDate.parse(datos[2], formatter);
+
+                if (fechaFin.isBefore(hoy)) {
+                    // Restablece el precio original en tu archivo principal
+                    restaurarPrecioOriginal(nombreProducto);
+                } else {
+                    lineasActualizadas.add(linea);
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error al verificar descuentos: " + e.getMessage());
+        }
+        
+        // Sobreescribe el archivo con los descuentos no expirados
+        try (FileWriter writer = new FileWriter("data/descuentos_temporales.csv", false)) {
+            for (String line : lineasActualizadas) {
+                writer.write(line + "\n");
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error al actualizar descuentos temporales: " + e.getMessage());
+        }
+        
+
+    }
+        
+        public void restaurarPrecioOriginal(String nombreProducto) {
+            // Implementa la lógica para leer el archivo principal de productos e 
+            // identificar el precio original del producto y restablecerlo.
+            // Luego guarda los cambios en el archivo de inventario.
+        }
+
 }
