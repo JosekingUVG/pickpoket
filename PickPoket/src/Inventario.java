@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Clase Inventario que maneja una lista de productos.
@@ -23,12 +24,14 @@ public class Inventario {
         productos.add(producto);
     }
 
+    
+
     /**
-     * Elimina un producto del inventario según su código.
+     * Elimina un producto del inventario según su nombre.
      * @param codigo El código del producto que se desea eliminar.
      */
     public void EliminarProducto(String codigo){
-        productos.removeIf(producto -> producto.getCodigo().equals(codigo));
+        productos.removeIf(producto -> producto.getNombre().equals(codigo));
     }
 
     /**
@@ -38,7 +41,7 @@ public class Inventario {
      */
     public Producto buscarProducto(String codigo){
         for(Producto producto : productos){
-            if(producto.getCodigo().equals(codigo)){
+            if(producto.getNombre().equals(codigo)){
                 return producto;
             }
         }
@@ -68,6 +71,13 @@ public class Inventario {
             }
         }
     }
+
+    public void setProductos(List<Producto> productos) {
+    this.productos = new ArrayList<>(productos);
+}
+
+
+    
 
 
 }

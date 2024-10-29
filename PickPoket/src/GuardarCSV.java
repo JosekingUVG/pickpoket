@@ -7,6 +7,11 @@ import java.io.File;
  * Clase que permite guardar información de productos y ventas en archivos CSV.
  */
 public class GuardarCSV {
+    Producto producto;
+    //Constructor sin parametros{}
+    public GuardarCSV() {
+        producto = new Producto();
+    }
 
     /**
      * Verifica si el archivo existe en la ruta especificada. Si no existe, lo crea.
@@ -31,7 +36,7 @@ public class GuardarCSV {
      * @param inventario El inventario de productos a guardar.
      */
     public void guardarProductos(Inventario inventario) {
-        String rutaArchivo = "productos.csv";
+        String rutaArchivo = "data/productos.csv";
         verificaroCrearArchivo(rutaArchivo);
 
         try (FileWriter writer = new FileWriter(rutaArchivo)) {
@@ -52,6 +57,7 @@ public class GuardarCSV {
             System.out.println("Error al guardar los productos en CSV: " + e.getMessage());
         }
     }
+    
 
     /**
      * Guarda una lista de ventas en un archivo CSV.

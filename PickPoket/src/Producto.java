@@ -8,6 +8,14 @@ public class Producto {
     private float precio;
     private int cantidad;
     private String categoria;
+    //Constructor sin parametros
+    public Producto() {
+        this.codigo = "";
+        this.nombre = "";
+        this.precio = 0;
+        this.cantidad = 0;
+        this.categoria = "";
+    }
 
     /**
      * Constructor de la clase Producto.

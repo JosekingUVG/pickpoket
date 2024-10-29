@@ -24,16 +24,16 @@ public class ProductosGUI extends JFrame {
     private JButton bEliminar;
 
     public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
+       /*  EventQueue.invokeLater(new Runnable() {
             public void run() {
-                try {
+                try {*/
                     ProductosGUI frame = new ProductosGUI();
                     frame.setVisible(true);
-                } catch (Exception e) {
+         /*       } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-        });
+        });*/
     }
 
     public ProductosGUI() {
@@ -104,18 +104,20 @@ public class ProductosGUI extends JFrame {
         
        
         //CARGAR LOS PRODUCTOS EN EL COMBOBOX
-      /*
+      
 		 try {
 	            // Llenar el JComboBox con los productos del archivo
 	            cargarUsuariosEnComboBox();
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	            System.out.println("Error al cargar productos: " + e.getMessage());
-	        }*/
+	        }
         
         //Escuchar los botones:
         bregresar.addActionListener(escucha);
         btnEditarProducto.addActionListener(escucha);
+        BAgregar.addActionListener(escucha);
+        bEliminar.addActionListener(escucha);
         
     }
 
@@ -133,19 +135,72 @@ public class ProductosGUI extends JFrame {
                 EditaProductoGUI frs = new EditaProductoGUI();
                 frs.setVisible(true);
                 dispose();
-            }
-        }
-    }
-    
-    /*private void cargarUsuariosEnComboBox() throws IOException {
-        CargarCSV usuarioLoader = new CargarCSV();
-        List<Producto> productos =  usuarioLoader.cargarProductos(); // Usar el nombre correcto
+            } else if(e.getSource() == BAgregar){
+                // Agregar un nuevo producto al archivo
+                Producto producto = new Producto();
+                producto.setCodigo(textField.getText());
+                producto.setNombre(textField_1.getText());
+                producto.setPrecio(Float.parseFloat(textField_2.getText()));
+                producto.setCantidad(Integer.parseInt(textField_3.getText()));
+                producto.setCategoria(textField_4.getText());
 
-        // Agregar nombres al JComboBox
-        for (Producto producto : productos) {
-            comboBox.addItem(producto.getNombre());
-        }
-    }*/
+                Inventario inventario = new Inventario();
+                inventario.AgregarProducto(producto);
+
+                ManejoCSV guardar = new ManejoCSV();
+                guardar.guardarProductos(inventario);
+                
+
+                // usar el nombre correcto del método
+                // agregarProductoAlArchivo(producto);
+                JOptionPane.showMessageDialog(null, "Producto agregado correctamente");
+                textField.setText("");
+                textField_1.setText("");
+                textField_2.setText("");
+                textField_3.setText("");
+                textField_4.setText("");
+
+            } else if(
+                e.getSource() == bEliminar
+            ){
+                String nombreProductoAEliminar = comboBox.getSelectedItem().toString();
+ManejoCSV manejoCSV = new ManejoCSV();
+
+try {
+    // Eliminar del archivo CSV usando el nombre del producto
+    manejoCSV.eliminarProductoPorNombre(nombreProductoAEliminar);
+    
+    // Actualizar ComboBox
+    comboBox.removeItem(nombreProductoAEliminar);
+    JOptionPane.showMessageDialog(null, "Producto eliminado: " + nombreProductoAEliminar);
+
+} catch (IOException ex) {
+    JOptionPane.showMessageDialog(null, "Error al eliminar el producto del archivo CSV: " + ex.getMessage());
+}
+ }
+}
+
+                
+                
+
+}
+    
+    
+    private void cargarUsuariosEnComboBox() throws IOException {
+        
+
+      
+        
+        // Cargar los productos desde el archivo CSV al inventario
+        ManejoCSV cargar = new ManejoCSV();
+        Inventario inventario = cargar.cargarProductos();
+
+        // Agregar nombres al JComboBox desde el inventario
+        for (Producto produ : inventario.VerInventario()) {
+            comboBox.addItem(produ.getNombre());
+        }      
+
+    }     
 
 }
 

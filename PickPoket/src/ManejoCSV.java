@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Clase que permite manejar la lectura y escritura de archivos CSV.
@@ -29,10 +30,10 @@ public class ManejoCSV {
      * @param inventario El inventario de productos a guardar.
      */
     public void guardarProductos(Inventario inventario) {
-        String rutaArchivo = "productos.csv";
+        String rutaArchivo = "data/productos.csv";
         verificarOCrearArchivo(rutaArchivo);
 
-        try (FileWriter writer = new FileWriter(rutaArchivo)) {
+        try (FileWriter writer = new FileWriter(rutaArchivo, true)) {
             for (Producto producto : inventario.VerInventario()) {
                 writer.append(producto.getCodigo())
                         .append(',')
@@ -174,5 +175,52 @@ public class ManejoCSV {
     private boolean verificarArchivoExiste(String rutaArchivo) {
         File archivo = new File(rutaArchivo);
         return archivo.exists();
+    }
+
+
+
+
+    public void eliminarProductoPorNombre(String nombreProducto) throws IOException {
+        List<Producto> productos = obtenerProductos(); // Cargar todos los productos en un ArrayList
+    
+        // Recorrer el ArrayList y eliminar el producto con el nombre especificado
+        for (int i = 0; i < productos.size(); i++) {
+            if (productos.get(i).getNombre().equals(nombreProducto)) {
+                productos.remove(i); // Eliminar el producto
+                break; // Terminar el ciclo una vez encontrado y eliminado
+            }
+        }
+    
+        // Sobrescribir el archivo CSV con la lista actualizada de productos
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("data/productos.csv"))) {
+            for (Producto producto : productos) {
+                bw.write(producto.getCodigo() + "," +
+                         producto.getNombre() + "," +
+                         producto.getPrecio() + "," +
+                         producto.getCantidad() + "," +
+                         producto.getCategoria());
+                bw.newLine();
+            }
+        }
+    
+        System.out.println("Producto eliminado exitosamente de productos.csv");
+    }
+
+    public List<Producto> obtenerProductos() throws IOException {
+        List<Producto> productos = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader("data/productos.csv"))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                String[] datos = linea.split(",");
+                Producto producto = new Producto();
+                producto.setCodigo(datos[0]);
+                producto.setNombre(datos[1]);
+                producto.setPrecio(Float.parseFloat(datos[2]));
+                producto.setCantidad(Integer.parseInt(datos[3]));
+                producto.setCategoria(datos[4]);
+                productos.add(producto);
+            }
+        }
+        return productos;
     }
 }
