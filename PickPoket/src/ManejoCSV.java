@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -15,6 +13,8 @@ import java.time.format.DateTimeFormatter;
  */
 public class ManejoCSV {
     private static final String RUTA_ARCHIVO = "data/productos.csv";
+    
+    private static final String RUTA_DESCUENTOS = "data/descuentos.csv";
 
     /**
      * Verifica si el archivo existe en la ruta especificada.
@@ -273,59 +273,127 @@ public class ManejoCSV {
         System.out.println("Producto modificado exitosamente en el archivo CSV.");
     }
     
-    
-    
+     /**
+     * Aplica un descuento a un producto específico por nombre y guarda el detalle en descuentos.csv.
+     *
+     * @param nombreProducto Nombre del producto a aplicar el descuento.
+     * @param descuento      Porcentaje de descuento.
+     * @throws IOException Si ocurre un error de entrada/salida.
+     */
+    public void aplicarDescuentoPorNombre(String nombreProducto, float descuento) throws IOException {
+        List<Producto> productos = obtenerProductos();
+        try (BufferedWriter bwDescuentos = new BufferedWriter(new FileWriter(RUTA_DESCUENTOS, true))) {
+            for (Producto producto : productos) {
+                if (producto.getNombre().equals(nombreProducto)) {
+                    float precioOriginal = producto.getPrecio();
+                    float precioConDescuento = precioOriginal * (1 - descuento / 100);
+                    producto.setPrecio(precioConDescuento);
 
-    public void aplicarDescuentoTemporal(String nombreProducto, double precioDescuento, LocalDate fechaFin) {
-        try (FileWriter writer = new FileWriter("data/descuentos_temporales.csv", true)) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            writer.write(nombreProducto + "," + precioDescuento + "," + fechaFin.format(formatter) + "\n");
-            JOptionPane.showMessageDialog(null, "Descuento aplicado temporalmente.");
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Error al aplicar el descuento: " + e.getMessage());
-        }
-    }
-    
-    public void verificarDescuentosExpirados() {
-    	String linea;
-        List<String> lineasActualizadas = new ArrayList<>();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate hoy = LocalDate.now();
-        
-        try (BufferedReader reader = new BufferedReader(new FileReader("data/descuentos_temporales.csv"))) {
-            while ((linea = reader.readLine()) != null) {
-                String[] datos = linea.split(",");
-                String nombreProducto = datos[0];
-                double precioDescuento = Double.parseDouble(datos[1]);
-                LocalDate fechaFin = LocalDate.parse(datos[2], formatter);
-
-                if (fechaFin.isBefore(hoy)) {
-                    // Restablece el precio original en tu archivo principal
-                    restaurarPrecioOriginal(nombreProducto);
-                } else {
-                    lineasActualizadas.add(linea);
+                    // Guardar detalles en descuentos.csv
+                    bwDescuentos.write(producto.getNombre() + "," + descuento + "," + precioConDescuento + "," + precioOriginal);
+                    bwDescuentos.newLine();
+                    break;
                 }
             }
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Error al verificar descuentos: " + e.getMessage());
         }
-        
-        // Sobreescribe el archivo con los descuentos no expirados
-        try (FileWriter writer = new FileWriter("data/descuentos_temporales.csv", false)) {
-            for (String line : lineasActualizadas) {
-                writer.write(line + "\n");
-            }
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Error al actualizar descuentos temporales: " + e.getMessage());
-        }
-        
 
+        // Guardar productos actualizados en productos.csv
+        guardarProductos(productos);
+        System.out.println("Descuento aplicado al producto con nombre " + nombreProducto + " en productos.csv");
     }
-        
-        public void restaurarPrecioOriginal(String nombreProducto) {
-            // Implementa la lógica para leer el archivo principal de productos e 
-            // identificar el precio original del producto y restablecerlo.
-            // Luego guarda los cambios en el archivo de inventario.
+
+    /**
+     * Aplica un descuento a todos los productos de una categoría y guarda los detalles en descuentos.csv.
+     *
+     * @param categoria Categoría de productos a aplicar el descuento.
+     * @param descuento Porcentaje de descuento.
+     * @throws IOException Si ocurre un error de entrada/salida.
+     */
+    public void aplicarDescuentoPorCategoria(String categoria, float descuento) throws IOException {
+        List<Producto> productos = obtenerProductos();
+        try (BufferedWriter bwDescuentos = new BufferedWriter(new FileWriter(RUTA_DESCUENTOS, true))) {
+            for (Producto producto : productos) {
+                if (producto.getCategoria().equals(categoria)) {
+                    float precioOriginal = producto.getPrecio();
+                    float precioConDescuento = precioOriginal * (1 - descuento / 100);
+                    producto.setPrecio(precioConDescuento);
+
+                    // Guardar detalles en descuentos.csv
+                    bwDescuentos.write(producto.getNombre() + "," + descuento + "," + precioConDescuento + "," + precioOriginal);
+                    bwDescuentos.newLine();
+                }
+            }
         }
+
+        // Guardar productos actualizados en productos.csv
+        guardarProductos(productos);
+        System.out.println("Descuento aplicado a todos los productos de la categoría " + categoria + " en productos.csv");
+    }
+
+    /**
+     * Restaura el precio original de un producto en productos.csv y elimina la entrada correspondiente en descuentos.csv.
+     *
+     * @param nombreProducto Nombre del producto a restaurar.
+     * @throws IOException Si ocurre un error de entrada/salida.
+     */
+    public void restaurarPrecioOriginal(String nombreProducto) throws IOException {
+        List<Producto> productos = obtenerProductos();
+        List<String> lineasDescuentos = new ArrayList<>();
+
+        // Leer descuentos.csv y buscar el precio original del producto
+        float precioOriginal = -1;
+        try (BufferedReader br = new BufferedReader(new FileReader(RUTA_DESCUENTOS))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                String[] datos = linea.split(",");
+                if (datos[0].equals(nombreProducto)) {
+                    precioOriginal = Float.parseFloat(datos[3]);
+                } else {
+                    lineasDescuentos.add(linea);
+                }
+            }
+        }
+
+        if (precioOriginal != -1) {
+            // Restaurar el precio en productos.csv
+            for (Producto producto : productos) {
+                if (producto.getNombre().equals(nombreProducto)) {
+                    producto.setPrecio(precioOriginal);
+                    break;
+                }
+            }
+            guardarProductos(productos);
+
+            // Escribir el archivo descuentos.csv sin la línea del producto restaurado
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(RUTA_DESCUENTOS))) {
+                for (String linea : lineasDescuentos) {
+                    bw.write(linea);
+                    bw.newLine();
+                }
+            }
+            System.out.println("Precio original restaurado para el producto " + nombreProducto);
+        } else {
+            System.out.println("Producto no encontrado en descuentos.csv");
+        }
+    }
+
+    /**
+     * Guarda la lista de productos en el archivo productos.csv.
+     *
+     * @param productos Lista de productos a guardar.
+     * @throws IOException Si ocurre un error de entrada/salida.
+     */
+    private void guardarProductos(List<Producto> productos) throws IOException {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(RUTA_ARCHIVO))) {
+            for (Producto producto : productos) {
+                bw.write(producto.getCodigo() + "," +
+                         producto.getNombre() + "," +
+                         producto.getPrecio() + "," +
+                         producto.getCantidad() + "," +
+                         producto.getCategoria());
+                bw.newLine();
+            }
+        }
+    }
 
 }
