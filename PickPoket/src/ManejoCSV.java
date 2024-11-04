@@ -106,7 +106,10 @@ public class ManejoCSV {
      * @return El inventario cargado con los productos desde el archivo CSV.
      */
     public Inventario cargarProductos() {
-        String rutaArchivo = "data/productos.csv";
+        File currentDirFile = new File(".");
+        String helper = currentDirFile.getAbsolutePath();
+        System.out.println(helper);
+        String rutaArchivo = helper.substring(0,helper.length()-2)+"\\pickpoket\\PickPoket\\data\\productos.csv";
         Inventario inventario = new Inventario();
 
         if (verificarArchivoExiste(rutaArchivo)) {
