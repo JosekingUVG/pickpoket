@@ -12,9 +12,14 @@ import java.time.format.DateTimeFormatter;
  * Clase que permite manejar la lectura y escritura de archivos CSV.
  */
 public class ManejoCSV {
-    private static final String RUTA_ARCHIVO = "data/productos.csv";
     
-    private static final String RUTA_DESCUENTOS = "data/descuentos.csv";
+    private String construirRutaArchivo(String subRuta) {
+        File currentDirFile = new File(".");
+        String helper = currentDirFile.getAbsolutePath();
+        String rutaFinal = helper.substring(0, helper.length() - 2) + subRuta;
+        System.out.println("Ruta generada para el archivo: " + rutaFinal); // Imprimir la ruta generada
+        return rutaFinal;
+    }
 
     /**
      * Verifica si el archivo existe en la ruta especificada.
@@ -39,7 +44,7 @@ public class ManejoCSV {
      * @param inventario El inventario de productos a guardar.
      */
     public void guardarProductos(Inventario inventario) {
-        String rutaArchivo = "data/productos.csv";
+        String rutaArchivo = construirRutaArchivo("\\pickpoket\\PickPoket\\data\\productos.csv");
         verificarOCrearArchivo(rutaArchivo);
 
         try (FileWriter writer = new FileWriter(rutaArchivo, true)) {
@@ -65,9 +70,12 @@ public class ManejoCSV {
      * Guarda una lista de ventas en un archivo CSV.
      *
      * @param ventas La lista de ventas a guardar.
+     * aaaaaaaaaaaaaaa
      */
     public void guardarVentas(ArrayList<Venta> ventas) {
-        String rutaArchivo = "ventas.csv";
+        File currentDirFile = new File(".");
+        String helper = currentDirFile.getAbsolutePath();
+        String rutaArchivo = helper.substring(0, helper.length() - 2) + "\\pickpoket\\PickPoket\\data\\ventas.csv";
         verificarOCrearArchivo(rutaArchivo);
 
         try (FileWriter writer = new FileWriter(rutaArchivo)) {
@@ -104,12 +112,10 @@ public class ManejoCSV {
      * Carga los productos desde un archivo CSV y los agrega al inventario.
      *
      * @return El inventario cargado con los productos desde el archivo CSV.
+     * LISTO
      */
     public Inventario cargarProductos() {
-        File currentDirFile = new File(".");
-        String helper = currentDirFile.getAbsolutePath();
-        System.out.println(helper);
-        String rutaArchivo = helper.substring(0,helper.length()-2)+"\\pickpoket\\PickPoket\\data\\productos.csv";
+        String rutaArchivo = construirRutaArchivo("\\pickpoket\\PickPoket\\data\\productos.csv");
         Inventario inventario = new Inventario();
 
         if (verificarArchivoExiste(rutaArchivo)) {
@@ -143,9 +149,12 @@ public class ManejoCSV {
      * @param inventario El inventario de productos necesarios para asociar a las ventas.
      * @return La lista de ventas cargada desde el archivo CSV.
      */
-    public ArrayList<Venta> cargarVentas(Inventario inventario) {
-        String rutaArchivo = "ventas.csv";
-        ArrayList<Venta> ventas = new ArrayList<>();
+   // LISTO
+   public ArrayList<Venta> cargarVentas(Inventario inventario) {
+    File currentDirFile = new File(".");
+    String helper = currentDirFile.getAbsolutePath();
+    String rutaArchivo = helper.substring(0, helper.length() - 2) + "\\pickpoket\\PickPoket\\data\\ventas.csv";
+    ArrayList<Venta> ventas = new ArrayList<>();
 
         if (verificarArchivoExiste(rutaArchivo)) {
             try (BufferedReader reader = new BufferedReader(new FileReader(rutaArchivo))) {
@@ -183,18 +192,24 @@ public class ManejoCSV {
         }
         return ventas;
     }
+//Listo 
+private boolean verificarArchivoExiste(String subRuta) {
+    File currentDirFile = new File(".");
+    String helper = currentDirFile.getAbsolutePath();
+    String rutaArchivo = helper.substring(0, helper.length() - 2) + subRuta;
 
-    private boolean verificarArchivoExiste(String rutaArchivo) {
-        File archivo = new File(rutaArchivo);
-        return archivo.exists();
-    }
-
-
+    File archivo = new File(rutaArchivo);
+    return archivo.exists();
+}
+//Listo
 
 
     public void eliminarProductoPorNombre(String nombreProducto) throws IOException {
-        List<Producto> productos = obtenerProductos(); // Cargar todos los productos en un ArrayList
+        File currentDirFile = new File(".");
+        String helper = currentDirFile.getAbsolutePath();
+        String rutaArchivo = helper.substring(0, helper.length() - 2) + "\\pickpoket\\PickPoket\\data\\productos.csv";
     
+        List<Producto> productos = obtenerProductos(rutaArchivo);
         // Recorrer el ArrayList y eliminar el producto con el nombre especificado
         for (int i = 0; i < productos.size(); i++) {
             if (productos.get(i).getNombre().equals(nombreProducto)) {
@@ -204,7 +219,7 @@ public class ManejoCSV {
         }
     
         // Sobrescribir el archivo CSV con la lista actualizada de productos
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("data/productos.csv"))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(rutaArchivo))) {
             for (Producto producto : productos) {
                 bw.write(producto.getCodigo() + "," +
                          producto.getNombre() + "," +
@@ -217,24 +232,25 @@ public class ManejoCSV {
     
         System.out.println("Producto eliminado exitosamente de productos.csv");
     }
-
-    public List<Producto> obtenerProductos() throws IOException {
-        List<Producto> productos = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("data/productos.csv"))) {
-            String linea;
-            while ((linea = br.readLine()) != null) {
-                String[] datos = linea.split(",");
-                Producto producto = new Producto();
-                producto.setCodigo(datos[0]);
-                producto.setNombre(datos[1]);
-                producto.setPrecio(Float.parseFloat(datos[2]));
-                producto.setCantidad(Integer.parseInt(datos[3]));
-                producto.setCategoria(datos[4]);
-                productos.add(producto);
-            }
+//LISTO
+public List<Producto> obtenerProductos(String rutaArchivo) throws IOException {
+    List<Producto> productos = new ArrayList<>();
+    try (BufferedReader br = new BufferedReader(new FileReader(rutaArchivo))) {
+        String linea;
+        while ((linea = br.readLine()) != null) {
+            String[] datos = linea.split(",");
+            Producto producto = new Producto();
+            producto.setCodigo(datos[0]);
+            producto.setNombre(datos[1]);
+            producto.setPrecio(Float.parseFloat(datos[2]));
+            producto.setCantidad(Integer.parseInt(datos[3]));
+            producto.setCategoria(datos[4]);
+            productos.add(producto);
         }
-        return productos;
     }
+    return productos;
+}
+
 
      /**
      * Modifica un producto existente en el archivo CSV.
@@ -245,11 +261,19 @@ public class ManejoCSV {
      * @param nuevaCantidad La nueva cantidad del producto.
      * @param nuevaCategoria La nueva categoría del producto.
      * @throws IOException Si ocurre un error de entrada/salida.
+     * 
+     * 
+   
      */
-    public void modificarProducto(String nombreProducto, String nuevoCodigo, float nuevoPrecio, int nuevaCantidad, String nuevaCategoria) throws IOException {
-        File archivoOriginal = new File(RUTA_ARCHIVO);
-        File archivoTemporal = new File("temp.csv");
 
+     //LISTO
+    public void modificarProducto(String nombreProducto, String nuevoCodigo, float nuevoPrecio, int nuevaCantidad, String nuevaCategoria) throws IOException {
+        File currentDirFile = new File(".");
+        String helper = currentDirFile.getAbsolutePath();
+        String rutaArchivo = helper.substring(0, helper.length() - 2) + "\\pickpoket\\PickPoket\\data\\productos.csv";
+        String rutaTemporal = helper.substring(0, helper.length() - 2) + "\\pickpoket\\PickPoket\\data\\temp.csv";
+        File archivoOriginal = new File(rutaArchivo);
+        File archivoTemporal = new File(rutaTemporal);
         BufferedReader reader = new BufferedReader(new FileReader(archivoOriginal));
         BufferedWriter writer = new BufferedWriter(new FileWriter(archivoTemporal));
 
@@ -282,16 +306,26 @@ public class ManejoCSV {
      * @param nombreProducto Nombre del producto a aplicar el descuento.
      * @param descuento      Porcentaje de descuento.
      * @throws IOException Si ocurre un error de entrada/salida.
+     
      */
-    public void aplicarDescuentoPorNombre(String nombreProducto, float descuento) throws IOException {
-        List<Producto> productos = obtenerProductos();
-        try (BufferedWriter bwDescuentos = new BufferedWriter(new FileWriter(RUTA_DESCUENTOS, true))) {
+
+
+     //Listo
+     public void aplicarDescuentoPorNombre(String nombreProducto, float descuento) throws IOException {
+        File currentDirFile = new File(".");
+        String helper = currentDirFile.getAbsolutePath();
+        String rutaArchivo = helper.substring(0, helper.length() - 2) + "\\pickpoket\\PickPoket\\data\\productos.csv";
+        String rutaDescuentos = helper.substring(0, helper.length() - 2) + "\\pickpoket\\PickPoket\\data\\descuentos.csv";
+    
+        List<Producto> productos = obtenerProductos(rutaArchivo);
+    
+        try (BufferedWriter bwDescuentos = new BufferedWriter(new FileWriter(rutaDescuentos, true))) {
             for (Producto producto : productos) {
                 if (producto.getNombre().equals(nombreProducto)) {
                     float precioOriginal = producto.getPrecio();
                     float precioConDescuento = precioOriginal * (1 - descuento / 100);
                     producto.setPrecio(precioConDescuento);
-
+    
                     // Guardar detalles en descuentos.csv
                     bwDescuentos.write(producto.getNombre() + "," + descuento + "," + precioConDescuento + "," + precioOriginal);
                     bwDescuentos.newLine();
@@ -299,11 +333,22 @@ public class ManejoCSV {
                 }
             }
         }
-
+    
         // Guardar productos actualizados en productos.csv
-        guardarProductos(productos);
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(rutaArchivo))) {
+            for (Producto producto : productos) {
+                bw.write(producto.getCodigo() + "," +
+                         producto.getNombre() + "," +
+                         producto.getPrecio() + "," +
+                         producto.getCantidad() + "," +
+                         producto.getCategoria());
+                bw.newLine();
+            }
+        }
+    
         System.out.println("Descuento aplicado al producto con nombre " + nombreProducto + " en productos.csv");
     }
+    
 
     /**
      * Aplica un descuento a todos los productos de una categoría y guarda los detalles en descuentos.csv.
@@ -311,41 +356,65 @@ public class ManejoCSV {
      * @param categoria Categoría de productos a aplicar el descuento.
      * @param descuento Porcentaje de descuento.
      * @throws IOException Si ocurre un error de entrada/salida.
+     * LISTO
      */
     public void aplicarDescuentoPorCategoria(String categoria, float descuento) throws IOException {
-        List<Producto> productos = obtenerProductos();
-        try (BufferedWriter bwDescuentos = new BufferedWriter(new FileWriter(RUTA_DESCUENTOS, true))) {
+        File currentDirFile = new File(".");
+        String helper = currentDirFile.getAbsolutePath();
+        String rutaArchivo = helper.substring(0, helper.length() - 2) + "\\pickpoket\\PickPoket\\data\\productos.csv";
+        String rutaDescuentos = helper.substring(0, helper.length() - 2) + "\\pickpoket\\PickPoket\\data\\descuentos.csv";
+    
+        List<Producto> productos = obtenerProductos(rutaArchivo);
+    
+        try (BufferedWriter bwDescuentos = new BufferedWriter(new FileWriter(rutaDescuentos, true))) {
             for (Producto producto : productos) {
                 if (producto.getCategoria().equals(categoria)) {
                     float precioOriginal = producto.getPrecio();
                     float precioConDescuento = precioOriginal * (1 - descuento / 100);
                     producto.setPrecio(precioConDescuento);
-
+    
                     // Guardar detalles en descuentos.csv
                     bwDescuentos.write(producto.getNombre() + "," + descuento + "," + precioConDescuento + "," + precioOriginal);
                     bwDescuentos.newLine();
                 }
             }
         }
-
+    
         // Guardar productos actualizados en productos.csv
-        guardarProductos(productos);
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(rutaArchivo))) {
+            for (Producto producto : productos) {
+                bw.write(producto.getCodigo() + "," +
+                         producto.getNombre() + "," +
+                         producto.getPrecio() + "," +
+                         producto.getCantidad() + "," +
+                         producto.getCategoria());
+                bw.newLine();
+            }
+        }
+    
         System.out.println("Descuento aplicado a todos los productos de la categoría " + categoria + " en productos.csv");
     }
+    
 
     /**
      * Restaura el precio original de un producto en productos.csv y elimina la entrada correspondiente en descuentos.csv.
      *
      * @param nombreProducto Nombre del producto a restaurar.
      * @throws IOException Si ocurre un error de entrada/salida.
+     * LISTo
      */
     public void restaurarPrecioOriginal(String nombreProducto) throws IOException {
-        List<Producto> productos = obtenerProductos();
+        File currentDirFile = new File(".");
+        String helper = currentDirFile.getAbsolutePath();
+        String rutaArchivo = helper.substring(0, helper.length() - 2) + "\\pickpoket\\PickPoket\\data\\productos.csv";
+        String rutaDescuentos = helper.substring(0, helper.length() - 2) + "\\pickpoket\\PickPoket\\data\\descuentos.csv";
+    
+        List<Producto> productos = obtenerProductos(rutaArchivo);
         List<String> lineasDescuentos = new ArrayList<>();
-
+    
         // Leer descuentos.csv y buscar el precio original del producto
         float precioOriginal = -1;
-        try (BufferedReader br = new BufferedReader(new FileReader(RUTA_DESCUENTOS))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(rutaDescuentos))) {
             String linea;
             while ((linea = br.readLine()) != null) {
                 String[] datos = linea.split(",");
@@ -356,7 +425,7 @@ public class ManejoCSV {
                 }
             }
         }
-
+    
         if (precioOriginal != -1) {
             // Restaurar el precio en productos.csv
             for (Producto producto : productos) {
@@ -366,9 +435,9 @@ public class ManejoCSV {
                 }
             }
             guardarProductos(productos);
-
+    
             // Escribir el archivo descuentos.csv sin la línea del producto restaurado
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(RUTA_DESCUENTOS))) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(rutaDescuentos))) {
                 for (String linea : lineasDescuentos) {
                     bw.write(linea);
                     bw.newLine();
@@ -379,24 +448,34 @@ public class ManejoCSV {
             System.out.println("Producto no encontrado en descuentos.csv");
         }
     }
-
+    
+    
     /**
      * Guarda la lista de productos en el archivo productos.csv.
      *
      * @param productos Lista de productos a guardar.
      * @throws IOException Si ocurre un error de entrada/salida.
+     * LISTO    
      */
     private void guardarProductos(List<Producto> productos) throws IOException {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(RUTA_ARCHIVO))) {
-            for (Producto producto : productos) {
-                bw.write(producto.getCodigo() + "," +
-                         producto.getNombre() + "," +
-                         producto.getPrecio() + "," +
-                         producto.getCantidad() + "," +
-                         producto.getCategoria());
-                bw.newLine();
-            }
+    File currentDirFile = new File(".");
+    String helper = currentDirFile.getAbsolutePath();
+    String rutaArchivo = helper.substring(0, helper.length() - 2) + "\\pickpoket\\PickPoket\\data\\productos.csv";
+
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter(rutaArchivo))) {
+        for (Producto producto : productos) {
+            bw.write(producto.getCodigo() + "," +
+                     producto.getNombre() + "," +
+                     producto.getPrecio() + "," +
+                     producto.getCantidad() + "," +
+                     producto.getCategoria());
+            bw.newLine();
         }
     }
+}
+
+
+
+
 
 }

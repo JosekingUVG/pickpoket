@@ -1,13 +1,22 @@
-import java.util.ArrayList;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Clase que permite cargar información de productos y ventas desde archivos CSV.
  */
 public class CargarCSV {
-    
+
+    /**
+     * Construye una ruta de archivo dinámica basada en el directorio actual y una subruta especificada.
+     *
+     * @param subRuta La subruta específica del archivo (por ejemplo, "\\data\\productos.csv").
+     * @return La ruta completa del archivo.
+     */
+    private String construirRutaArchivo(String subRuta) {
+        File currentDirFile = new File(".");
+        String helper = currentDirFile.getAbsolutePath();
+        return helper.substring(0, helper.length() - 2) + subRuta;
+    }
 
     /**
      * Verifica si el archivo existe en la ruta especificada.
@@ -26,7 +35,7 @@ public class CargarCSV {
      * @return El inventario cargado con los productos desde el archivo CSV.
      */
     public Inventario cargarProductos() {
-        String rutaArchivo = "data/productos.csv";
+        String rutaArchivo = construirRutaArchivo("\\pickpoket\\PickPoket\\data\\productos.csv");
         Inventario inventario = new Inventario();
 
         if (verificarArchivoExiste(rutaArchivo)) {
@@ -61,7 +70,7 @@ public class CargarCSV {
      * @return La lista de ventas cargada desde el archivo CSV.
      */
     public ArrayList<Venta> cargarVentas(Inventario inventario) {
-        String rutaArchivo = "ventas.csv";
+        String rutaArchivo = construirRutaArchivo("\\pickpoket\\PickPoket\\data\\ventas.csv");
         ArrayList<Venta> ventas = new ArrayList<>();
 
         if (verificarArchivoExiste(rutaArchivo)) {
@@ -100,9 +109,4 @@ public class CargarCSV {
         }
         return ventas;
     }
-
-
-     
-    
-
 }

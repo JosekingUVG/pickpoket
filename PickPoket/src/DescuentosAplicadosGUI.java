@@ -1,4 +1,6 @@
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.io.File;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,10 +14,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
-import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.border.LineBorder;
-import java.awt.Color;
+import javax.swing.table.DefaultTableModel;
 
 public class DescuentosAplicadosGUI extends JFrame {
 
@@ -52,30 +52,30 @@ public class DescuentosAplicadosGUI extends JFrame {
     }
 
     public void inicializar() {
-        Escucha escucha= new Escucha();
+        Escucha escucha = new Escucha();
         setTitle("DESCUENTOS APLICADOS");
         setBounds(100, 100, 523, 346);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+
         JPanel panel = new JPanel();
         panel.setBackground(new Color(176, 230, 255));
         panel.setBorder(new LineBorder(new Color(128, 128, 192), 4));
         getContentPane().add(panel, BorderLayout.NORTH);
-        
+
         JLabel lblNewLabel = new JLabel("QUITAR DESCUENTO: ");
         panel.add(lblNewLabel);
-        
+
         CBcargar = new JComboBox<>();
         panel.add(CBcargar);
-        
+
         quitar = new JButton("QUITAR");
         panel.add(quitar);
-        
+
         JPanel panel_1 = new JPanel();
         panel_1.setBackground(new Color(176, 230, 255));
         panel_1.setBorder(new LineBorder(new Color(128, 128, 192), 4));
         getContentPane().add(panel_1, BorderLayout.CENTER);
-        
+
         // Configurar el modelo de la tabla
         tableModel = new DefaultTableModel(new String[]{"Nombre", "Descuento (%)", "Precio con Descuento", "Precio Original"}, 0);
         table = new JTable(tableModel);
@@ -86,34 +86,41 @@ public class DescuentosAplicadosGUI extends JFrame {
 
         volver = new JButton("Volver");
         panel_1.add(volver, BorderLayout.SOUTH);
-        //Escuchar los botones:
+        // Escuchar los botones
         quitar.addActionListener(escucha);
         volver.addActionListener(escucha);
     }
 
+    /**
+     * Construye una ruta de archivo dinámica basada en el directorio actual y una subruta especificada.
+     *
+     * @param subRuta La subruta específica del archivo (por ejemplo, "\\data\\descuentos.csv").
+     * @return La ruta completa del archivo.
+     */
+    private String construirRutaArchivo(String subRuta) {
+        File currentDirFile = new File(".");
+        String helper = currentDirFile.getAbsolutePath();
+        return helper.substring(0, helper.length() - 2) + subRuta;
+    }
 
     private class Escucha implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-			if (e.getSource() == quitar) {
-                String nombre;
+            if (e.getSource() == quitar) {
+                String nombre = (String) CBcargar.getSelectedItem();
                 ManejoCSV manejo = new ManejoCSV();
-                nombre=(String) CBcargar.getSelectedItem();
+
                 try {
                     manejo.restaurarPrecioOriginal(nombre);
                     JOptionPane.showMessageDialog(null, "Descuento quitado correctamente");
                 } catch (IOException e1) {
-                    // TODO Auto-generated catch block
-                    
                     JOptionPane.showMessageDialog(null, "Error al restaurar el precio original: " + e1.getMessage());
-                    
                 }
 
-            }else if (e.getSource() == volver) {
-                DescuentosGUI volviendo= new DescuentosGUI();
+            } else if (e.getSource() == volver) {
+                DescuentosGUI volviendo = new DescuentosGUI();
                 volviendo.setVisible(true); // Mostrar la ventana
                 dispose(); // Cerrar la ventana
-                
             }
         }
     }
@@ -122,7 +129,7 @@ public class DescuentosAplicadosGUI extends JFrame {
      * Cargar datos de descuentos.csv en el JTable.
      */
     private void cargarDatosDescuentos() {
-        String rutaCSV = "data/descuentos.csv";
+        String rutaCSV = construirRutaArchivo("\\pickpoket\\PickPoket\\data\\descuentos.csv");
         try (BufferedReader br = new BufferedReader(new FileReader(rutaCSV))) {
             String linea;
             while ((linea = br.readLine()) != null) {
