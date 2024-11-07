@@ -5,13 +5,22 @@ import java.util.List;
 public class loginCSV {
     private Usuario usuario;
     
-    private static final String FILE_PATH = "data/usuarios.csv";
+    private static  String FILE_PATH;
 
 
 
     // Constructor
     public loginCSV() {
         this.usuario = new Usuario();
+        
+        // Obtener el directorio actual del proyecto
+        String projectDir = System.getProperty("user.dir");
+        
+        // Construir la ruta completa sin duplicados
+        FILE_PATH = projectDir + "\\PickPoket\\data\\usuarios.csv";
+        
+        System.out.println("Ruta de archivo CSV: " + FILE_PATH); // Verificar la ruta
+   
     }
 
     // Función para guardar un nuevo usuario

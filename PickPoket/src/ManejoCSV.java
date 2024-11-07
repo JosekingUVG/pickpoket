@@ -12,9 +12,16 @@ import java.time.format.DateTimeFormatter;
  * Clase que permite manejar la lectura y escritura de archivos CSV.
  */
 public class ManejoCSV {
-    private static final String RUTA_ARCHIVO = "data/productos.csv";
+    private static  String RUTA_ARCHIVO ;
     
-    private static final String RUTA_DESCUENTOS = "data/descuentos.csv";
+    private static  String RUTA_DESCUENTOS ;
+
+    // Bloque de inicialización estático para configurar las rutas de archivo
+    static {
+        String projectDir = System.getProperty("user.dir");
+        RUTA_ARCHIVO = projectDir + "\\PickPoket\\data\\productos.csv";
+        RUTA_DESCUENTOS = projectDir + "\\PickPoket\\data\\descuentos.csv";
+    }
 
     /**
      * Verifica si el archivo existe en la ruta especificada.
@@ -39,10 +46,10 @@ public class ManejoCSV {
      * @param inventario El inventario de productos a guardar.
      */
     public void guardarProductos(Inventario inventario) {
-        String rutaArchivo = "data/productos.csv";
-        verificarOCrearArchivo(rutaArchivo);
+        //String rutaArchivo = "data/productos.csv";
+        verificarOCrearArchivo(RUTA_ARCHIVO);
 
-        try (FileWriter writer = new FileWriter(rutaArchivo, true)) {
+        try (FileWriter writer = new FileWriter(RUTA_ARCHIVO, true)) {
             for (Producto producto : inventario.VerInventario()) {
                 writer.append(producto.getCodigo())
                         .append(',')
@@ -55,7 +62,7 @@ public class ManejoCSV {
                         .append(producto.getCategoria())
                         .append('\n');
             }
-            System.out.println("Productos guardados exitosamente en " + rutaArchivo);
+            System.out.println("Productos guardados exitosamente en " + RUTA_ARCHIVO);
         } catch (IOException e) {
             System.out.println("Error al guardar los productos en CSV: " + e.getMessage());
         }
@@ -106,14 +113,14 @@ public class ManejoCSV {
      * @return El inventario cargado con los productos desde el archivo CSV.
      */
     public Inventario cargarProductos() {
-        File currentDirFile = new File(".");
+        /*File currentDirFile = new File(".");
         String helper = currentDirFile.getAbsolutePath();
         System.out.println(helper);
         String rutaArchivo = helper.substring(0,helper.length()-2)+"\\pickpoket\\PickPoket\\data\\productos.csv";
-        Inventario inventario = new Inventario();
+        */Inventario inventario = new Inventario();
 
-        if (verificarArchivoExiste(rutaArchivo)) {
-            try (BufferedReader reader = new BufferedReader(new FileReader(rutaArchivo))) {
+        if (verificarArchivoExiste(RUTA_ARCHIVO)) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(RUTA_ARCHIVO))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     String[] campos = line.split(",");
@@ -126,12 +133,12 @@ public class ManejoCSV {
                     Producto producto = new Producto(codigo, nombre, precio, cantidad, categoria);
                     inventario.AgregarProducto(producto);
                 }
-                System.out.println("Productos cargados exitosamente desde " + rutaArchivo);
+                System.out.println("Productos cargados exitosamente desde " + RUTA_ARCHIVO);
             } catch (IOException e) {
                 System.out.println("Error al cargar los productos desde CSV: " + e.getMessage());
             }
         } else {
-            System.out.println("El archivo " + rutaArchivo + " no existe.");
+            System.out.println("El archivo " + RUTA_ARCHIVO + " no existe.");
         }
         return inventario;
     }
@@ -204,7 +211,7 @@ public class ManejoCSV {
         }
     
         // Sobrescribir el archivo CSV con la lista actualizada de productos
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("data/productos.csv"))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(RUTA_ARCHIVO))) {
             for (Producto producto : productos) {
                 bw.write(producto.getCodigo() + "," +
                          producto.getNombre() + "," +
@@ -220,7 +227,7 @@ public class ManejoCSV {
 
     public List<Producto> obtenerProductos() throws IOException {
         List<Producto> productos = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("data/productos.csv"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(RUTA_ARCHIVO))) {
             String linea;
             while ((linea = br.readLine()) != null) {
                 String[] datos = linea.split(",");

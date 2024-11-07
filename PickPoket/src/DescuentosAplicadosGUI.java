@@ -122,7 +122,10 @@ public class DescuentosAplicadosGUI extends JFrame {
      * Cargar datos de descuentos.csv en el JTable.
      */
     private void cargarDatosDescuentos() {
-        String rutaCSV = "data/descuentos.csv";
+        String rutaCSV ;
+        String projectDir = System.getProperty("user.dir");
+        //RUTA_ARCHIVO = projectDir + "\\PickPoket\\data\\productos.csv";
+        rutaCSV = projectDir + "\\PickPoket\\data\\descuentos.csv";
         try (BufferedReader br = new BufferedReader(new FileReader(rutaCSV))) {
             String linea;
             while ((linea = br.readLine()) != null) {
