@@ -1,135 +1,161 @@
-import java.awt.EventQueue;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-
+import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * Clase InventarioGUI que representa la interfaz gráfica para la gestión del inventario.
+ * Permite visualizar los productos, buscar por nombre y ordenar por diferentes atributos.
+ */
 public class InventarioGUI extends JFrame {
     private JPanel contentPane;
-    private JTextField txtCodigo;
-    private JTextField txtNombre;
-    private JTextField txtPrecio;
-    private JTextArea textAreaInventario;
-    private Inventario inventario;
+    private JTextField txtBuscar;
+    private JComboBox<String> comboFiltro;
+    private JTable tableInventario;
+    private Inventario inventario; // Instancia compartida de Inventario
 
-    public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    InventarioGUI frame = new InventarioGUI();
-                    frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+    /**
+     * Constructor de la clase InventarioGUI.
+     * Inicializa la interfaz gráfica y configura la instancia de Inventario.
+     *
+     * @param inventario la instancia de Inventario a gestionar.
+     */
+    public InventarioGUI(Inventario inventario) {
+        this.inventario = inventario;
+        inicializar();
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);  // Cerrar solo esta ventana
+        setSize(600, 400);  // Tamaño del JFrame
     }
 
-    public InventarioGUI() {
-        inventario = new Inventario();
+    /**
+     * Método principal para ejecutar InventarioGUI de forma independiente.
+     * Crea una instancia de Inventario y muestra la ventana InventarioGUI.
+     */
+    public static void main(String[] args) {
+        Inventario inventario = new Inventario();
+        // Agregar productos de ejemplo para ver en el inventario
+        inventario.AgregarProducto(new Producto("001", "Producto 1", 50.0f, 5, "Categoria 1"));
+        inventario.AgregarProducto(new Producto("002", "Producto 2", 75.0f, 3, "Categoria 2"));
 
+        InventarioGUI frame = new InventarioGUI(inventario);
+        frame.setVisible(true);
+    }
+
+    /**
+     * Método para inicializar los componentes de la interfaz gráfica.
+     * Configura los campos de búsqueda, filtros y la tabla de inventario.
+     */
+    private void inicializar() {
         setTitle("Gestión de Inventario");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 450, 400);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
-        JLabel lblCodigo = new JLabel("Código:");
-        lblCodigo.setBounds(10, 20, 80, 14);
-        contentPane.add(lblCodigo);
+        txtBuscar = new JTextField();
+        txtBuscar.setBounds(10, 20, 300, 20);
+        contentPane.add(txtBuscar);
+        txtBuscar.setColumns(10);
 
-        txtCodigo = new JTextField();
-        txtCodigo.setBounds(100, 17, 120, 20);
-        contentPane.add(txtCodigo);
-        txtCodigo.setColumns(10);
-
-        JLabel lblNombre = new JLabel("Nombre:");
-        lblNombre.setBounds(10, 50, 80, 14);
-        contentPane.add(lblNombre);
-
-        txtNombre = new JTextField();
-        txtNombre.setBounds(100, 47, 120, 20);
-        contentPane.add(txtNombre);
-        txtNombre.setColumns(10);
-
-        JLabel lblPrecio = new JLabel("Precio:");
-        lblPrecio.setBounds(10, 80, 80, 14);
-        contentPane.add(lblPrecio);
-
-        txtPrecio = new JTextField();
-        txtPrecio.setBounds(100, 77, 120, 20);
-        contentPane.add(txtPrecio);
-        txtPrecio.setColumns(10);
-
-        JButton btnAgregar = new JButton("Agregar Producto");
-        btnAgregar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String codigo = txtCodigo.getText();
-                String nombre = txtNombre.getText();
-                Float precio = Float.parseFloat(txtPrecio.getText());
-
-                Producto producto = new Producto (codigo, nombre, precio, getDefaultCloseOperation(), nombre);
-                inventario.AgregarProducto(producto);
-                actualizarInventario();
-                limpiarCampos();
-            }
-        });
-        btnAgregar.setBounds(10, 110, 210, 23);
-        contentPane.add(btnAgregar);
-
-        JButton btnEliminar = new JButton("Eliminar Producto");
-        btnEliminar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String codigo = txtCodigo.getText();
-                inventario.EliminarProducto(codigo);
-                actualizarInventario();
-                limpiarCampos();
-            }
-        });
-        btnEliminar.setBounds(10, 140, 210, 23);
-        contentPane.add(btnEliminar);
-
-        JButton btnBuscar = new JButton("Buscar Producto");
-        btnBuscar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String codigo = txtCodigo.getText();
-                Producto producto = inventario.buscarProducto(codigo);
-                if (producto != null) {
-                    txtNombre.setText(producto.getNombre());
-                    txtPrecio.setText(String.valueOf(producto.getPrecio()));
-                } else {
-                    JOptionPane.showMessageDialog(null, "Producto no encontrado");
-                }
-            }
-        });
-        btnBuscar.setBounds(10, 170, 210, 23);
+        JButton btnBuscar = new JButton("Buscar");
+        btnBuscar.setBounds(320, 20, 100, 20);
         contentPane.add(btnBuscar);
 
-        textAreaInventario = new JTextArea();
-        textAreaInventario.setBounds(10, 210, 414, 140);
-        contentPane.add(textAreaInventario);
+        comboFiltro = new JComboBox<>(new String[]{"Ordenar por código", "Ordenar por nombre", "Ordenar por precio", "Ordenar por cantidad"});
+        comboFiltro.setBounds(10, 50, 300, 20);
+        contentPane.add(comboFiltro);
 
-        actualizarInventario();
+        JButton btnExportar = new JButton("Exportar a CSV");
+        btnExportar.setBounds(430, 20, 140, 20);
+        contentPane.add(btnExportar);
+
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setBounds(10, 80, 564, 270);
+        contentPane.add(scrollPane);
+
+        tableInventario = new JTable();
+        tableInventario.setModel(new DefaultTableModel(
+            new Object[][] {},
+            new String[] {"Código", "Nombre", "Precio", "Cantidad", "Categoría"}
+        ));
+        scrollPane.setViewportView(tableInventario);
+
+        // Cargar los datos iniciales en la tabla
+        actualizarTabla();
+
+        // Acción del botón de búsqueda
+        btnBuscar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                actualizarTabla(txtBuscar.getText());
+            }
+        });
+
+        // Acción del botón de exportación a CSV
+        btnExportar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                exportarTablaACSV();
+            }
+        });
     }
 
-    private void actualizarInventario() {
+    /**
+     * Método para actualizar la tabla con todos los productos del inventario.
+     * Filtra y ordena los productos según el texto de búsqueda y el criterio seleccionado.
+     */
+    public void actualizarTabla() {
+        actualizarTabla(null); // Cargar sin filtro de búsqueda
+    }
+
+    private void actualizarTabla(String filtro) {
+        String criterio = comboFiltro.getSelectedItem().toString().replace("Ordenar por ", "").toLowerCase();
+        inventario.ordenarInventario(criterio);
+
+        DefaultTableModel model = (DefaultTableModel) tableInventario.getModel();
+        model.setRowCount(0);
+
         ArrayList<Producto> productos = inventario.VerInventario();
-        StringBuilder sb = new StringBuilder();
         for (Producto producto : productos) {
-            sb.append("Código: ").append(producto.getCodigo())
-              .append(", Nombre: ").append(producto.getNombre())
-              .append(", Precio: ").append(producto.getPrecio()).append("\n");
+            if (filtro == null || producto.getNombre().toLowerCase().contains(filtro.toLowerCase())) {
+                model.addRow(new Object[]{
+                    producto.getCodigo(),
+                    producto.getNombre(),
+                    producto.getPrecio(),
+                    producto.getCantidad(),
+                    producto.getCategoria()
+                });
+            }
         }
-        textAreaInventario.setText(sb.toString());
     }
 
-    private void limpiarCampos() {
-        txtCodigo.setText("");
-        txtNombre.setText("");
-        txtPrecio.setText("");
+    /**
+     * Método para exportar la tabla a un archivo CSV en la carpeta PickPoket/data.
+     */
+    private void exportarTablaACSV() {
+        String filePath = "PickPoket/data/inventario.csv";  // Ruta relativa a la carpeta data
+        System.out.println("Exportando a: " + filePath);  // Verificar ruta en consola
+
+        try (FileWriter csvWriter = new FileWriter(filePath)) {
+            csvWriter.append("Código,Nombre,Precio,Cantidad,Categoría\n");
+            DefaultTableModel model = (DefaultTableModel) tableInventario.getModel();
+            
+            for (int i = 0; i < model.getRowCount(); i++) {
+                csvWriter.append(model.getValueAt(i, 0).toString()).append(",");
+                csvWriter.append(model.getValueAt(i, 1).toString()).append(",");
+                csvWriter.append(model.getValueAt(i, 2).toString()).append(",");
+                csvWriter.append(model.getValueAt(i, 3).toString()).append(",");
+                csvWriter.append(model.getValueAt(i, 4).toString()).append("\n");
+            }
+            
+            csvWriter.flush();
+            JOptionPane.showMessageDialog(this, "Datos exportados a inventario.csv correctamente.");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error al exportar los datos: " + e.getMessage());
+        }
     }
 }

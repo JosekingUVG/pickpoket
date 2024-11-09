@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -70,6 +72,27 @@ public class Inventario {
                 producto.setCategoria(productoActualizado.getCategoria());
             }
         }
+    }
+
+    public void ordenarInventario(String criterio) {
+        Comparator<Producto> comparador;
+        switch (criterio) {
+            case "codigo":
+                comparador = Comparator.comparing(Producto::getCodigo);
+                break;
+            case "nombre":
+                comparador = Comparator.comparing(Producto::getNombre);
+                break;
+            case "precio":
+                comparador = Comparator.comparing(Producto::getPrecio);
+                break;
+            case "cantidad":
+                comparador = Comparator.comparing(Producto::getCantidad);
+                break;
+            default:
+                return;
+        }
+        Collections.sort(productos, comparador);
     }
 
     public void setProductos(List<Producto> productos) {
