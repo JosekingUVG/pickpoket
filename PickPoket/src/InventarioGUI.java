@@ -84,7 +84,7 @@ public class InventarioGUI extends JFrame {
         comboFiltro.setBounds(10, 50, 300, 20);
         contentPane.add(comboFiltro);
 
-        JButton btnExportar = new JButton("Exportar a CSV");
+        JButton btnExportar = new JButton("Volver");
         btnExportar.setBounds(430, 20, 140, 20);
         contentPane.add(btnExportar);
 
@@ -152,25 +152,9 @@ public class InventarioGUI extends JFrame {
      * Método para exportar la tabla a un archivo CSV en la carpeta PickPoket/data.
      */
     private void exportarTablaACSV() {
-        String filePath = "PickPoket/data/inventario.csv";  // Ruta relativa a la carpeta data
-        System.out.println("Exportando a: " + filePath);  // Verificar ruta en consola
-
-        try (FileWriter csvWriter = new FileWriter(filePath)) {
-            csvWriter.append("Código,Nombre,Precio,Cantidad,Categoría\n");
-            DefaultTableModel model = (DefaultTableModel) tableInventario.getModel();
-            
-            for (int i = 0; i < model.getRowCount(); i++) {
-                csvWriter.append(model.getValueAt(i, 0).toString()).append(",");
-                csvWriter.append(model.getValueAt(i, 1).toString()).append(",");
-                csvWriter.append(model.getValueAt(i, 2).toString()).append(",");
-                csvWriter.append(model.getValueAt(i, 3).toString()).append(",");
-                csvWriter.append(model.getValueAt(i, 4).toString()).append("\n");
-            }
-            
-            csvWriter.flush();
-            JOptionPane.showMessageDialog(this, "Datos exportados a inventario.csv correctamente.");
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error al exportar los datos: " + e.getMessage());
-        }
+    	// Abrir la ventana de login
+        AdminGUI loginGUI = new AdminGUI();
+        loginGUI.setVisible(true);
+        dispose(); // Cerrar la ventana actual
     }
 }
