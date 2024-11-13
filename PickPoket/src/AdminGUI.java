@@ -2,6 +2,10 @@ import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -18,6 +22,7 @@ import java.awt.GridBagLayout;
 import javax.swing.JButton;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+
 
 public class AdminGUI extends JFrame {
 
@@ -161,6 +166,27 @@ public class AdminGUI extends JFrame {
                 dispose();
             } else if (e.getSource() == btnRegistrarProducto) {
                 JOptionPane.showMessageDialog(null, "Has presionado el botón: Inventario");
+                ManejoCSV xd = new ManejoCSV(); // Initialize ManejoCSV instance//+
+                List<Producto> inventario = new ArrayList<Producto>();//+
+                try {
+                    inventario = xd.obtenerProductos();
+                } catch (IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                } // Now xd is initialized, so no error//+
+                    
+    
+                    Inventario inv= new Inventario();
+                    //Hacer un for para mandar cada producto individualmente al inventario
+                    for (Producto producto : inventario) {
+                        inv.AgregarProducto(producto);
+                        }
+
+                InventarioGUI loginGUI = new InventarioGUI(inv);
+
+                loginGUI.setVisible(true);
+
+                dispose(); // Cerrar la ventana actual
             } else if (e.getSource() == btnEditarProducto) {
                 JOptionPane.showMessageDialog(null, "Has presionado el botón: Informe");
             } else if (e.getSource() == btnInventario) {

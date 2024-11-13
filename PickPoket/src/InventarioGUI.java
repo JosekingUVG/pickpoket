@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Clase InventarioGUI que representa la interfaz gráfica para la gestión del inventario.
@@ -17,6 +18,12 @@ public class InventarioGUI extends JFrame {
     private JComboBox<String> comboFiltro;
     private JTable tableInventario;
     private Inventario inventario; // Instancia compartida de Inventario
+    public  InventarioGUI(){
+        
+        inicializar();
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);  // Cerrar solo esta ventana
+        setSize(600, 400);  // Tamaño del JFrame
+    }
 
     /**
      * Constructor de la clase InventarioGUI.
@@ -34,15 +41,23 @@ public class InventarioGUI extends JFrame {
     /**
      * Método principal para ejecutar InventarioGUI de forma independiente.
      * Crea una instancia de Inventario y muestra la ventana InventarioGUI.
-     */
-    public static void main(String[] args) {
-        Inventario inventario = new Inventario();
-        // Agregar productos de ejemplo para ver en el inventario
-        inventario.AgregarProducto(new Producto("001", "Producto 1", 50.0f, 5, "Categoria 1"));
-        inventario.AgregarProducto(new Producto("002", "Producto 2", 75.0f, 3, "Categoria 2"));
+          * @throws IOException 
+          */
+         public static void main(String[] args) throws IOException {
+            ManejoCSV xd = new ManejoCSV(); // Initialize ManejoCSV instance//+
+            List<Producto> inventario = new ArrayList<Producto>();//+
+            inventario = xd.obtenerProductos(); // Now xd is initialized, so no error//+
+                
 
-        InventarioGUI frame = new InventarioGUI(inventario);
+                Inventario inv= new Inventario();
+                //Hacer un for para mandar cada producto individualmente al inventario
+                for (Producto producto : inventario) {
+                    inv.AgregarProducto(producto);
+                    }
+                InventarioGUI frame = new InventarioGUI(inv);
+
         frame.setVisible(true);
+        
     }
 
     /**
