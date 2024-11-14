@@ -2,13 +2,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class InformesGUI extends JFrame {
     private static final long serialVersionUID = 1L;
     
     private JLabel lblGananciasTotales;
     private JLabel lblIVATotal;
-    private Inventario inventario;
+    private static final String RUTA_CSV = "PickPoket/data/inventario.csv"; // Ruta al archivo CSV
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -63,9 +64,6 @@ public class InformesGUI extends JFrame {
         lblIVATotal.setBounds(200, 61, 100, 16);
         panel_1.add(lblIVATotal);
 
-        // Inicializamos inventario (ejemplo, en la práctica este sería el inventario real)
-        inventario = new Inventario();
-        
         // Botón para calcular y mostrar los informes
         JButton btnCalcular = new JButton("Calcular Informes");
         btnCalcular.setBounds(150, 215, 150, 29);
@@ -87,9 +85,14 @@ public class InformesGUI extends JFrame {
      * Actualiza los valores de ganancias e IVA en la interfaz gráfica.
      */
     private void actualizarInformes() {
-        double gananciasTotales = Informes.calcularGananciasTotales(inventario.VerInventario());
-        double ivaTotal = Informes.calcularIVATotal(inventario.VerInventario());
+        // Leer los productos desde el archivo CSV
+        List<Producto> productos = Informes.leerProductosDesdeCSV(RUTA_CSV);
+        
+        // Calcular ganancias totales e IVA total
+        double gananciasTotales = Informes.calcularGananciasTotales(productos);
+        double ivaTotal = Informes.calcularIVATotal(productos);
 
+        // Actualizar las etiquetas en la interfaz gráfica
         lblGananciasTotales.setText(String.format("%.2f", gananciasTotales));
         lblIVATotal.setText(String.format("%.2f", ivaTotal));
     }
