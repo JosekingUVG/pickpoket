@@ -1,16 +1,33 @@
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
 
 public class InformesGUI extends JFrame {
-    private static final long serialVersionUID = 1L;
-    
-    private JLabel lblGananciasTotales;
-    private JLabel lblIVATotal;
-    private static final String RUTA_CSV = "PickPoket/data/inventario.csv"; // Ruta al archivo CSV
 
+    private static final long serialVersionUID = 1L;
+    private JPanel contentPane;
+    private JTable table;
+    private JButton volver;
+    private static final String RUTA_VENTAS = "PickPoket/data/ventas.csv"; // Ruta al archivo CSV de ventas
+
+    /**
+     * Launch the application.
+     */
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             try {
@@ -22,78 +39,83 @@ public class InformesGUI extends JFrame {
         });
     }
 
+    /**
+     * Create the frame.
+     */
     public InformesGUI() {
-        getContentPane().setBackground(new Color(173, 230, 255));
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 450, 300);
-        getContentPane().setLayout(null);
-
-        JLabel lblNewLabel_1 = new JLabel("Informe de Ganancias");
-        lblNewLabel_1.setBounds(21, 6, 166, 16);
-        getContentPane().add(lblNewLabel_1);
-
-        JPanel panel = new JPanel();
-        panel.setBackground(new Color(183, 172, 255));
-        panel.setBounds(6, 6, 205, 16);
-        getContentPane().add(panel);
-
-        JButton btnNewButton = new JButton("Regresar");
-        btnNewButton.setBounds(311, 215, 117, 29);
-        getContentPane().add(btnNewButton);
-
-        JPanel panel_1 = new JPanel();
-        panel_1.setBounds(69, 45, 309, 158);
-        getContentPane().add(panel_1);
-        panel_1.setLayout(null);
-
-        JLabel lblNewLabel_2 = new JLabel("Ganancias totales:");
-        lblNewLabel_2.setBounds(23, 18, 113, 16);
-        lblNewLabel_2.setForeground(new Color(183, 139, 255));
-        panel_1.add(lblNewLabel_2);
-
-        lblGananciasTotales = new JLabel("0.00");
-        lblGananciasTotales.setBounds(200, 18, 100, 16);
-        panel_1.add(lblGananciasTotales);
-
-        JLabel lblNewLabel = new JLabel("IVA Total:");
-        lblNewLabel.setBounds(23, 61, 113, 16);
-        lblNewLabel.setForeground(new Color(183, 139, 255));
-        panel_1.add(lblNewLabel);
-
-        lblIVATotal = new JLabel("0.00");
-        lblIVATotal.setBounds(200, 61, 100, 16);
-        panel_1.add(lblIVATotal);
-
-        // Botón para calcular y mostrar los informes
-        JButton btnCalcular = new JButton("Calcular Informes");
-        btnCalcular.setBounds(150, 215, 150, 29);
-        btnCalcular.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                actualizarInformes();
-            }
-        });
-        getContentPane().add(btnCalcular);
-
-        // Panel de fondo
-        JPanel panel_fondo = new JPanel();
-        panel_fondo.setBackground(new Color(183, 172, 255));
-        panel_fondo.setBounds(6, 6, 205, 16);
-        getContentPane().add(panel_fondo);
+        inicializador();
     }
 
-    /**
-     * Actualiza los valores de ganancias e IVA en la interfaz gráfica.
-     */
-    private void actualizarInformes() {
-        // Leer los productos desde el archivo CSV
-        List<Producto> productos = Informes.leerProductosDesdeCSV(RUTA_CSV);
-        
-        // Calcular ganancias totales e IVA total
-        double gananciasTotales = Informes.calcularGananciasTotales(productos);
-        double ivaTotal = Informes.calcularIVATotal(productos);
+    private void inicializador() {
+        setTitle("Informes de Ventas");
+        setBounds(100, 100, 600, 400);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        contentPane = new JPanel();
+        contentPane.setBackground(new Color(176, 230, 255));
+        contentPane.setLayout(new BorderLayout());
+        setContentPane(contentPane);
 
-        // Actualizar las etiquetas en la interfaz gráfica
-        lblGananciasTotales.setText(String.format("%.2f", gananciasTotales));
-        lblIVATotal.setText(String.format("%.2f", ivaTotal));
+        // Panel para la tabla
+        JPanel panelTabla = new JPanel();
+        panelTabla.setBorder(new TitledBorder(new LineBorder(new Color(128, 128, 192), 2), "Ventas", TitledBorder.CENTER, TitledBorder.TOP));
+        panelTabla.setBackground(new Color(176, 230, 255));
+        contentPane.add(panelTabla, BorderLayout.CENTER);
+        panelTabla.setLayout(new BorderLayout());
+
+        // Crear la tabla
+        String[] columnNames = {"Fecha", "Nombre", "Cantidad", "Total", "IVA"};
+        Object[][] data = {}; // Inicialmente vacío
+        table = new JTable(data, columnNames);
+        JScrollPane scrollPane = new JScrollPane(table);
+        panelTabla.add(scrollPane, BorderLayout.CENTER);
+        JPanel tabla = new JPanel();
+        tabla.setBackground(new Color(176, 230, 255));
+        contentPane.add(tabla, BorderLayout.SOUTH);
+
+        // Botón para cargar datos
+        JButton btnCargarDatos = new JButton("Cargar Datos");
+        btnCargarDatos.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cargarDatosDesdeCSV();
+            }
+        });
+        tabla.add(btnCargarDatos, BorderLayout.NORTH);
+        volver = new JButton("Volver");
+        tabla.add(volver, BorderLayout.EAST);
+        volver.addActionListener(escuchar);
+    }
+    private ActionListener escuchar = e -> {
+        if (e.getSource() == volver) {
+                AdminGUI fr = new AdminGUI();
+                fr.setVisible(true);
+                dispose();
+        }
+    };
+
+    /**
+     * Carga los datos desde el archivo CSV y los muestra en la tabla.
+     */
+    private void cargarDatosDesdeCSV() {
+        try (BufferedReader br = new BufferedReader(new FileReader(RUTA_VENTAS))) {
+            String linea;
+            DefaultTableModel model = new DefaultTableModel(new String[]{"Fecha", "Nombre", "Cantidad", "Total", "IVA"}, 0);
+            while ((linea = br.readLine()) != null) {
+                String[] partes = linea.split(": ");
+                String fecha = partes[0];
+                String[] productosStr = partes[1].split(" \\| ");
+                for (String productoStr : productosStr) {
+                    String[] detalles = productoStr.split(", ");
+                    String nombre = detalles[0];
+                    int cantidad = Integer.parseInt(detalles[1]);
+                    double total = Double.parseDouble(detalles[2]);
+                    double iva = Double.parseDouble(detalles[3]);
+                    model.addRow(new Object[]{fecha, nombre, cantidad, total, iva});
+                }
+            }
+            table.setModel(model);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

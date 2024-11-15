@@ -189,6 +189,10 @@ public class AdminGUI extends JFrame {
                 dispose(); // Cerrar la ventana actual
             } else if (e.getSource() == btnEditarProducto) {
                 JOptionPane.showMessageDialog(null, "Has presionado el botón: Informe");
+                // Abrir la ventana de informesGUI
+                InformesGUI loginGUI = new InformesGUI();
+                loginGUI.setVisible(true);
+                dispose(); // Cerrar la ventana actual
             } else if (e.getSource() == btnInventario) {
                 JOptionPane.showMessageDialog(null, "Has presionado el botón: Descuentos");
                 // Abrir la ventana de login
