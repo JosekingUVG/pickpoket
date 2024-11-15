@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter;
  */
 public class ManejoCSV {
     private static  String RUTA_ARCHIVO ;
+    private static  String RUTA_VENTAS ;
     
     private static  String RUTA_DESCUENTOS ;
 
@@ -20,6 +21,7 @@ public class ManejoCSV {
     static {
         String projectDir = System.getProperty("user.dir");
         RUTA_ARCHIVO = projectDir + "\\PickPoket\\data\\productos.csv";
+        RUTA_VENTAS = projectDir + "\\PickPoket\\data\\ventas.csv";
         RUTA_DESCUENTOS = projectDir + "\\PickPoket\\data\\descuentos.csv";
     }
 
@@ -149,7 +151,7 @@ public class ManejoCSV {
      *
      * @param inventario El inventario de productos necesarios para asociar a las ventas.
      * @return La lista de ventas cargada desde el archivo CSV.
-     */
+     *
     public ArrayList<Venta> cargarVentas(Inventario inventario) {
         String rutaArchivo = "ventas.csv";
         ArrayList<Venta> ventas = new ArrayList<>();
@@ -189,7 +191,7 @@ public class ManejoCSV {
             System.out.println("El archivo " + rutaArchivo + " no existe.");
         }
         return ventas;
-    }
+    }*/
 
     private boolean verificarArchivoExiste(String rutaArchivo) {
         File archivo = new File(rutaArchivo);
@@ -406,4 +408,29 @@ public class ManejoCSV {
         }
     }
 
+    public void registrarVentaEnCSV(Venta venta) throws IOException {
+        String archivoVentas = RUTA_VENTAS;
+        try (FileWriter writer = new FileWriter(archivoVentas, true)) {
+            StringBuilder linea = new StringBuilder();
+            linea.append(venta.getFecha()).append(": ");
+            
+            for (Producto producto : venta.getListaProductos()) { // Cambié a getListaProductos()
+                double iva = producto.getPrecio() * producto.getCantidad() * 0.12;
+                double total = producto.getPrecio() * producto.getCantidad() * 1.12;
+                linea.append(producto.getNombre()).append(", ")
+                    .append(producto.getCantidad()).append(", ")
+                    .append(String.format("%.2f", total)).append(", ")
+                    .append(String.format("%.2f", iva)).append(" | ");
+            }
+            
+            // Eliminar el último " | " si hay productos
+            if (linea.length() > 0) {
+                linea.setLength(linea.length() - 3); // Eliminar los últimos 3 caracteres
+            }
+            
+            writer.write(linea.toString() + "\n");
+        }
+    }
+    
 }
+

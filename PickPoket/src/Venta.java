@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Clase Venta que representa una venta de productos.
@@ -7,18 +8,30 @@ import java.util.ArrayList;
 public class Venta {
 
     private String codigoVenta;
-    private ArrayList<Producto> listaProductos;
+    private List<Producto> listaProductos; // Cambié a List para mayor flexibilidad
     private double total;
     private String fecha;
+    private String idVenta;
 
     /**
-     * Constructor de la clase Venta.
-     * @param codigoVenta El código único de la venta.
-     * @param listaProductos La lista de productos incluidos en la venta.
-     * @param total El total de la venta.
-     * @param fecha La fecha en la que se realizó la venta.
+     * Constructor sin parámetros
      */
-    public Venta(String codigoVenta, ArrayList<Producto> listaProductos, double total, String fecha) {
+    public Venta() {
+        this.codigoVenta = "";
+        this.total = 0;
+        this.listaProductos = new ArrayList<>();  // Inicializamos la lista de productos
+    }
+
+    public Venta(String idVenta, String fecha) {
+        this.idVenta = idVenta;
+        this.fecha = fecha;
+        this.listaProductos = new ArrayList<>(); // Inicializamos la lista de productos
+    }
+
+    /**
+     * Constructor completo
+     */
+    public Venta(String codigoVenta, List<Producto> listaProductos, double total, String fecha) {
         this.codigoVenta = codigoVenta;
         this.listaProductos = listaProductos;
         this.total = total;
@@ -30,49 +43,17 @@ public class Venta {
      * Suma el costo del producto al total de la venta.
      * @param producto El producto que se va a agregar a la venta.
      */
-    public void AgregarProducto(Producto producto){
+    public void agregarProducto(Producto producto) {
         listaProductos.add(producto);
         total += producto.getPrecio() * producto.getCantidad();
-    }
-
-    /**
-     * Calcula y devuelve el total de la venta.
-     * @return El total de la venta.
-     */
-    public double CalcularTotal(){
-        return total;
-    }
-
-    /**
-     * Obtiene el código de la venta.
-     * @return El código de la venta.
-     */
-    public String getCodigoVenta() {
-        return codigoVenta;
-    }
-
-    /**
-     * Establece el código de la venta.
-     * @param codigoVenta El nuevo código de la venta.
-     */
-    public void setCodigoVenta(String codigoVenta) {
-        this.codigoVenta = codigoVenta;
     }
 
     /**
      * Obtiene la lista de productos de la venta.
      * @return La lista de productos.
      */
-    public ArrayList<Producto> getListaProductos() {
+    public List<Producto> getListaProductos() {
         return listaProductos;
-    }
-
-    /**
-     * Establece una nueva lista de productos para la venta.
-     * @param listaProductos La nueva lista de productos.
-     */
-    public void setListaProductos(ArrayList<Producto> listaProductos) {
-        this.listaProductos = listaProductos;
     }
 
     /**
@@ -84,14 +65,6 @@ public class Venta {
     }
 
     /**
-     * Establece un nuevo total para la venta.
-     * @param total El nuevo total de la venta.
-     */
-    public void setTotal(double total) {
-        this.total = total;
-    }
-
-    /**
      * Obtiene la fecha en que se realizó la venta.
      * @return La fecha de la venta.
      */
@@ -99,11 +72,9 @@ public class Venta {
         return fecha;
     }
 
-    /**
-     * Establece una nueva fecha para la venta.
-     * @param fecha La nueva fecha de la venta.
-     */
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
+    public String getCodigoVenta() {
+        return codigoVenta;
     }
+
+    // Puedes agregar más métodos según sea necesario
 }

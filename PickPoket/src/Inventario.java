@@ -99,6 +99,21 @@ public class Inventario {
     this.productos = new ArrayList<>(productos);
 }
 
+// Método para buscar un producto por nombre
+public Producto buscarProductoPorNombre(String nombre) {
+    for (Producto producto : productos) {
+        if (producto.getNombre().equalsIgnoreCase(nombre)) {
+            return producto; // Devuelve el producto si el nombre coincide
+        }
+    }
+    return null; // Retorna null si no encuentra el producto
+}
+
+// Método para agregar un producto al inventario
+public void agregarProducto(Producto producto) {
+    productos.add(producto);
+}
+
 
     
 
